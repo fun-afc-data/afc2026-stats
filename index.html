@@ -3,18 +3,110 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2026 全力游戏 · 成绩数据站</title>
+<title>2026 全力游戏 · 水平自测工具</title>
+<script src="./echarts.min.js"></script>
+<script src="./data.js"></script>
 <style>
   :root{
     --bg:#f5f6f8; --card:#ffffff; --ink:#14181f; --ink2:#4a5261; --ink3:#8a93a3;
-    --line:#e6e9ef; --accent:#0f9d76; --male:#1c6fd6; --female:#d6336c;
+    --line:#e6e9ef; --male:#1c6fd6; --female:#d6336c; --accent:#0f9d76; --warn:#e0a344;
+    --radius:14px; --pad:30px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;}
-  a{color:inherit;text-decoration:none}
-  /* 免责 banner */
+  .wrap{max-width:1080px;margin:0 auto;padding:0 var(--pad) 80px}
+  header{padding:34px 0 6px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+  h1{font-size:27px;line-height:1.25;margin:9px 0 8px;letter-spacing:-.02em}
+  .sub{color:var(--ink2);font-size:13.5px;line-height:1.75;max-width:800px}
+  section{margin-top:34px;scroll-margin-top:20px}
+  .sec-h{display:flex;align-items:baseline;gap:11px;margin-bottom:3px}
+  .sec-n{font-size:12px;font-weight:700;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px}
+  h2{font-size:19px;margin:0;letter-spacing:-.01em}
+  .sec-d{color:var(--ink2);font-size:13px;line-height:1.75;margin:9px 0 0;max-width:850px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-top:14px}
+  .card-t{font-size:14px;font-weight:650}
+  .card-s{font-size:12.5px;color:var(--ink3);margin-top:4px;line-height:1.6}
+
+  .tabs{display:inline-flex;gap:2px;padding:3px;background:#f1f3f7;border:1px solid var(--line);border-radius:9px}
+  .tabs button{appearance:none;border:0;background:transparent;font:inherit;font-size:13px;font-weight:600;
+    color:var(--ink3);padding:6px 20px;border-radius:6px;cursor:pointer;transition:.15s}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(20,24,31,.10)}
+  .tabs button.on[data-g="男子"]{color:var(--male)}
+  .tabs button.on[data-g="女子"]{color:var(--female)}
+
+  .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .field label{display:block;font-size:12px;color:var(--ink3);margin-bottom:5px;font-weight:600}
+  .field input{font:inherit;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;
+    background:#fff;color:var(--ink);outline:none;width:150px}
+  .field input:focus{border-color:#a9b4c6}
+  .btn{appearance:none;border:1px solid var(--line);background:#fff;font:inherit;font-size:13.5px;font-weight:600;
+    color:var(--ink);padding:10px 20px;border-radius:9px;cursor:pointer;transition:.15s}
+  .btn:hover{border-color:#c3cbd8;background:#fafbfc}
+  .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.primary:hover{background:#262c37}
+  .btn.ghost{font-weight:500;color:var(--ink2)}
+
+  .items{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:14px}
+  @media(max-width:880px){.items{grid-template-columns:repeat(2,1fr)}}
+  .item{border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:#fdfdfe}
+  .item.core{background:#fff;border-color:#d9e0ea;box-shadow:0 1px 2px rgba(20,24,31,.04)}
+  .item .nm{font-size:13px;font-weight:650;display:flex;align-items:center;gap:5px}
+  .item .nm .tag{font-size:10px;font-weight:600;color:#fff;background:var(--accent);border-radius:4px;padding:1px 5px;letter-spacing:.02em}
+  .item .hint{font-size:11px;color:var(--ink3);margin:3px 0 7px;line-height:1.4}
+  .item input{width:100%;font:inherit;font-size:14px;padding:8px 10px;border:1px solid var(--line);
+    border-radius:8px;background:#fff;outline:none}
+  .item input:focus{border-color:#a9b4c6}
+  .item .pv{font-size:11.5px;color:var(--accent);margin-top:5px;height:15px;font-variant-numeric:tabular-nums}
+  .item .pv.bad{color:#c0392b}
+  .item .dnf{margin-top:6px;font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:5px;cursor:pointer}
+  .item .dnf input{width:auto;margin:0}
+  .item .repsinp{display:none;width:100%;margin-top:7px;font:inherit;font-size:13px;padding:7px 9px;
+    border:1px solid var(--warn);border-radius:8px;background:#fffdf7;outline:none}
+  .item .repsinp.on{display:block}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+  @media(max-width:880px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px 17px}
+  .kpi.hl{background:#f0faf6;border-color:#c7ebdd}
+  .kpi .v{font-size:25px;font-weight:700;letter-spacing:-.02em;line-height:1.15;font-variant-numeric:tabular-nums}
+  .kpi .l{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.5}
+  .kpi .e{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.5}
+
+  .chart{width:100%;height:360px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}}
+
+  .tw{overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+  thead th{background:#fafbfc;text-align:center;font-weight:600;font-size:11.5px;color:var(--ink2);
+    padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th:first-child{text-align:left;position:sticky;left:0;background:#fafbfc;z-index:2}
+  tbody td{padding:8px 10px;border-bottom:1px solid #f0f2f6;text-align:center;white-space:nowrap}
+  tbody td:first-child{text-align:left;position:sticky;left:0;background:#fff;font-weight:600}
+  tbody tr:hover td{background:#fafbfd}
+  .cell{display:inline-block;min-width:60px;padding:3px 7px;border-radius:6px;font-weight:650;color:#14181f}
+  .mut{color:var(--ink3)}
+  .num{font-variant-numeric:tabular-nums}
+  .g-m{color:var(--male)}.g-f{color:var(--female)}
+
+  .note{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid #b9c3d4;
+    border-radius:10px;padding:13px 16px;margin-top:14px;font-size:12.5px;color:var(--ink2);line-height:1.78}
+  .note b{color:var(--ink)}
+  .note.warn{border-left-color:var(--warn);background:#fffdf7}
+  .empty{color:var(--ink3);font-size:13px;padding:40px 0;text-align:center}
+  .rivals{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:12px}
+  @media(max-width:880px){.rivals{grid-template-columns:1fr}}
+  .rival{border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:#fff}
+  .rival .nm{font-size:13.5px;font-weight:650;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .rival .nm span{font-size:11px;color:var(--ink3);font-weight:500}
+  .rival .rl{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.6}
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+
+  /* ===== 免责声明 ===== */
   .afc-disc{position:relative;background:#fff8e6;border-bottom:1px solid #f0dfae;padding:11px 46px 11px 18px;
     font-size:12.6px;line-height:1.7;color:#7a5a12;}
   .afc-disc b{color:#5d4308}
@@ -22,91 +114,590 @@
   .afc-disc .afc-x{position:absolute;right:12px;top:9px;width:22px;height:22px;line-height:20px;text-align:center;
     border:1px solid #e2cd93;border-radius:6px;background:#fffdf6;color:#8a6a20;cursor:pointer;font-size:14px;user-select:none}
   .afc-disc .afc-x:hover{background:#f7edd2}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 30px 70px}
-  header{padding:46px 0 8px}
-  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:600}
-  h1{font-size:30px;line-height:1.25;margin:10px 0 10px;letter-spacing:-.02em}
-  .sub{color:var(--ink2);font-size:14px;line-height:1.8;max-width:820px}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
-  @media(max-width:760px){.grid{grid-template-columns:1fr}}
-  .card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;
-    transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;}
-  .card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(20,24,31,.09);border-color:#cfd6e2}
-  .card .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--accent);
-    padding:3px 9px;border-radius:6px}
-  .card.sec .tag{background:var(--male)}
-  .card h2{font-size:19px;margin:12px 0 8px;letter-spacing:-.01em}
-  .card p{color:var(--ink2);font-size:13.4px;line-height:1.78;margin:0 0 14px}
-  .card ul{margin:0 0 14px;padding-left:17px;color:var(--ink2);font-size:12.8px;line-height:1.85}
-  .card .go{font-size:13px;font-weight:600;color:var(--accent)}
-  .card.sec .go{color:var(--male)}
-  .meta{margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;
-    color:var(--ink2);font-size:12.8px;line-height:1.9}
-  .meta b{color:var(--ink)}
-  .afc-foot{margin:36px 0 0;padding:20px 0 30px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.2px;line-height:1.85}
-  .afc-foot .afc-fbox{background:rgba(255,248,230,.72);border:1px solid #f0dfae;border-radius:10px;padding:12px 15px;color:#7a5a12;margin-bottom:12px}
+  .afc-foot{margin:44px 0 0;padding:22px 0 34px;border-top:1px solid var(--line,#e6e9ef);
+    color:var(--ink3,#8a93a3);font-size:12.2px;line-height:1.85}
+  .afc-foot .afc-fbox{background:rgba(255,248,230,.72);border:1px solid #f0dfae;border-radius:10px;padding:12px 15px;color:#7a5a12;margin-bottom:13px}
   .afc-foot .afc-fbox b{color:#5d4308}
+  .afc-foot a{text-decoration:underline;text-underline-offset:2px}
+
 </style>
 </head>
 <body>
 
 <div class="afc-disc" id="afcDisc">
   <span class="afc-dt">免责声明</span>
-  本站所有数据抓取自 2026 全力游戏（ALLTRA GAMES）官方公开成绩榜，经人工清洗后自行统计，<b>仅供个人娱乐、赛后复盘与数据交流使用</b>；
-  不构成任何训练、运动表现、医疗、营养或参赛报名的建议，也<b>不是官方排名或官方成绩证明</b>。数据可能存在遗漏或误差，<b>请以主办方最终公布的成绩为准</b>。
+  本页所有数据抓取自 2026 全力游戏（ALLTRA GAMES）官方公开成绩榜，经人工清洗后自行统计，<b>仅供个人娱乐、赛后复盘与数据交流使用</b>；
+  不构成任何训练、运动表现、医疗、营养或参赛报名的建议，也<b>不是官方排名或官方成绩证明</b>。
+  受接口口径、缺项、退赛 / 被关门、人工判别国籍与组别等因素影响，数据可能存在遗漏或误差，<b>请以主办方最终公布的成绩为准</b>。
+  若你是榜单中的选手且发现信息有误，欢迎指出更正。
   <span class="afc-x" id="afcDiscX" title="知道了，收起">×</span>
 </div>
 
 <div class="wrap">
-  <header>
-    <div class="eyebrow">ALLTRA GAMES 2026 · Data Station</div>
-    <h1>2026 全力游戏 · 成绩数据站</h1>
-    <div class="sub">
-      收录「2026 全力游戏总决赛」（matchId 113）与「2026 全力游戏公开赛」（matchId 149）官方成绩接口的完整成绩，
-      含个人与团队组别（团队成员成绩已逐人还原）。下面是两个入口：<b>看全局</b>，或者<b>测自己</b>。
+
+<header>
+  <div class="eyebrow">2026 ALLTRA GAMES · SELF CHECK</div>
+  <h1>我的水平自测</h1>
+  <div class="sub">输入性别和你的成绩，看看如果参加总决赛，你在<strong>职业组 / 精英组 / 传奇 35-39 / 传奇 40+ / 混双团队 / 公开赛</strong>各自能排在百分位多少。数据来自 2026 全力游戏总决赛（113）与公开赛（149）全部真实成绩。</div>
+</header>
+
+<!-- ===== 1 输入 ===== -->
+<section id="in">
+  <div class="sec-h"><span class="sec-n">01</span><h2>填你的成绩</h2></div>
+  <div class="sec-d">只填你有把握的项就行，填得越多判断越准。<b>时间可以写 <code>33:20</code>（分:秒），也可以直接写秒数</b>；小于 60 的纯数字会自动按<b>分钟</b>理解（输入 5 = 5 分 00 秒），解析结果会实时显示在输入框下方。</div>
+
+  <div class="card">
+    <div class="card-t">基本信息</div>
+    <div class="row">
+      <div class="field">
+        <label>性别</label>
+        <div class="tabs" id="sexTabs">
+          <button data-g="女子" class="on">女子</button>
+          <button data-g="男子">男子</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>年龄（选填，用于判断报名资格）</label>
+        <input id="age" type="number" placeholder="如 33" style="width:110px">
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn primary" id="go">开始测算</button>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn ghost" id="demo">填入示例</button>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn ghost" id="clr">清空</button>
+      </div>
     </div>
-  </header>
 
-  <div class="grid">
-    <a class="card" href="./selftest.html">
-      <span class="tag">推荐先玩</span>
-      <h2>我的水平自测</h2>
-      <p>填性别 + 你的成绩，看看自己放到总决赛的各个组别里，大概能站到百分位多少。</p>
-      <ul>
-        <li>覆盖 7K 跑步 / 5RM 硬拉 / SPEED / ENDURANCE 等项目</li>
-        <li>对比池：职业组 · 精英组 · 传奇 35-39 / 40+ · 混双团队选手 · 公开赛</li>
-        <li>支持「没做完 / 被关门」的情况，按完成量估算</li>
-      </ul>
-      <div class="go">开始自测 →</div>
-    </a>
+    <div style="margin-top:16px;font-size:12.5px;font-weight:650;color:var(--ink2)">核心项目 <span class="mut" style="font-weight:500">（男女通用，覆盖所有组别）</span></div>
+    <div class="items" id="coreItems"></div>
 
-    <a class="card sec" href="./analysis.html">
-      <span class="tag">深度分析</span>
-      <h2>成绩可视化报告</h2>
-      <p>10 个章节的分布、对比与相关性拆解：基线、性别、年龄、组别、中外、项目关联、混双协同。</p>
-      <ul>
-        <li>脊线图 / 箱线图 / 热力图 / 散点矩阵</li>
-        <li>含显著性检验（置换检验 p 值）与协同度排行</li>
-        <li>底部可查全部选手明细表</li>
-      </ul>
-      <div class="go">查看报告 →</div>
-    </a>
+    <div style="margin-top:16px;font-size:12.5px;font-weight:650;color:var(--ink2)">其余项目 <span class="mut" style="font-weight:500">（覆盖组别有限，样本较小的会标注人数）</span></div>
+    <div class="items" id="otherItems"></div>
   </div>
+</section>
 
-  <div class="meta">
-    <b>数据范围</b>：总决赛 113 + 公开赛 149，成绩为 0 / DNF / DNS 的记录已从统计中剔除。<br>
-    <b>分析项目</b>：7K 跑步、5RM 硬拉、SPEED、ENDURANCE，以及 ODYSSEY / ALLTRA 三部曲等其余项目的完成情况。<br>
-    <b>口径提醒</b>：国籍 / 来源地区依据姓名拼音人工判别后复核，仍有少量待定；团队排名采用三项合计自行计算（官方 teamRank 与成员成绩对不上，未采用）。
+<!-- ===== 2 结果 ===== -->
+<section id="out">
+  <div class="sec-h"><span class="sec-n">02</span><h2>结果</h2></div>
+  <div id="outBody"><div class="empty card">填好成绩后点「开始测算」</div></div>
+</section>
+
+<!-- ===== 3 说明 ===== -->
+<section id="note">
+  <div class="sec-h"><span class="sec-n">03</span><h2>口径与说明</h2></div>
+  <div class="note">
+    <b>百分位怎么算</b>：在选定组别、同性别、有该项目有效成绩的人里，你<b>击败了百分之多少的人</b>（并列记一半）。95 分位意味着你比该组 95% 的选手强。<br>
+    <b>这是反事实估计</b>：假设你加入某个组别，而该组别现有选手的水平分布不变。它回答的是「以我现在的水平，去那个组能排第几」，<b>不是</b>「我在那个组的同年龄段里排第几」（后者需要同组内的年龄数据，官方接口没有提供）。<br>
+    <b>选择效应提醒</b>：精英组不限年龄，强者会涌向精英组；传奇组是筛剩下的大龄池。所以「传奇 35-39 的百分位」和「精英组的百分位」属于不同人群，纵向 moderating 不能直接相减当作“年龄损失”。<br>
+    <b>被关门 / 未完赛</b>：ODYSSEY、ALLTRA Ⅰ、X.O、EVA ONE、OPTIMUS 都有官方关门时间，被关门的人官方只记录「CAP + 限时内完成的 reps 数」。勾选「没做完」并<b>填上你的完成量</b>，工具会把你排进同组别、同性别的<b>被关门人群</b>里，并按「完赛者整体优于未完赛者、未完赛者之间按完成量排序」的口径估算百分位（表中标注「估」）。ALLTRA Ⅱ / Ⅲ 与 1RM 抓举本身就以完成次数 / 公斤计分，没完成的人天然落在分布最左，无需额外填写。<br>
+    <b>ENDURANCE</b>：总决赛中该项目因天气原因最终只有职业组留下成绩；公开赛个人组别则全员参加并有成绩（91 条），因此可与职业组、公开赛等列对照，但与精英组 / 传奇组无法比较。<br>
+    <b>综合百分位</b> = 你填写的各项目百分位的<b>等权算术平均</b>，各 Pool 只用该项可用（n≥8）的<hide></hide>项目加权平均，权重按项目可用性。<br>
+    <b>数据来源</b>：抓取自 2026 全力游戏官方公开成绩榜；完整名次请以<b>「全力游戏」小程序 · 排行 tab</b> 为准。
   </div>
+</section>
 
-  <div class="afc-foot">
-    <div class="afc-fbox">
-      <b>免责声明：</b>本站内容为个人基于公开成绩榜的统计分析，<b>仅供娱乐与参考，不构成任何训练 / 健康 / 参赛建议</b>，亦不代表官方结论。
-      依据本站内容进行的任何训练或参赛决策，风险与后果由使用者自行承担。
-    </div>
-    <div>原始成绩版权归属赛事主办方，本页面仅作非商业的数据整理与可视化呈现。生成于 2026-10-28。</div>
+<footer>
+  2026 全力游戏 ALLTRA GAMES · 水平自测工具 · 全部成绩均为官方公开数据<br>
+  本工具仅用于自我评估与训练参考，不构成任何参赛资格认定。
+</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var D=(window.AFC_DATA)||null;
+if(!D){document.getElementById('outBody').innerHTML='<div class="empty card">未能加载 data.js，请确认与本工具同目录。</div>';return;}
+var ALL=D.persons||[];
+var CAPS=D.caps||{};
+var CAPREPS=D.capreps||{};
+/* 职业组 vs 公开赛 ENDURANCE 中位差距（一次性静态计算，用于文案说明） */
+
+/* ---------- 项目定义 ---------- */
+var ITEMS=[
+ {k:'r', n:'7K 跑步',    u:'time', hi:false, ph:'如 33:20', core:1, hint:'7 公里跑步，越短越好'},
+ {k:'s', n:'5RM 硬拉',   u:'kg',   hi:true,  ph:'如 120',   core:1, hint:'公斤数，越重越好'},
+ {k:'sp',n:'SPEED',      u:'time', hi:false, ph:'如 5:10',  core:1, hint:'冲刺专项，越短越好'},
+ {k:'e', n:'ENDURANCE',  u:'time', hi:false, ph:'如 22:00', core:0, hint:'耐力综合项目 · 职业组 + 公开赛个人均可对照'},
+ {k:'od',n:'ODYSSEY',    u:'time', hi:false, ph:'如 12:30', core:0, hint:'限时项目'},
+ {k:'a1',n:'ALLTRA Ⅰ',   u:'time', hi:false, ph:'如 4:20',  core:0, hint:'限时项目'},
+ {k:'a2',n:'ALLTRA Ⅱ',   u:'reps', hi:true,  ph:'如 60',    core:0, hint:'完成次数，越多越好'},
+ {k:'a3',n:'ALLTRA Ⅲ',   u:'reps', hi:true,  ph:'如 80',    core:0, hint:'完成次数，越多越好'},
+ {k:'xo',n:'X.O',        u:'time', hi:false, ph:'如 8:00',  core:0, hint:'限时项目'},
+ {k:'ev',n:'EVA ONE',    u:'time', hi:false, ph:'如 7:30',  core:0, hint:'限时项目'},
+ {k:'op',n:'OPTIMUS',    u:'time', hi:false, ph:'如 9:00',  core:0, hint:'限时项目'},
+ {k:'sn',n:'1RM 抓举',   u:'kg',   hi:true,  ph:'如 60',    core:0, hint:'公斤数，越重越好'}
+];
+var IMAP={}; ITEMS.forEach(function(x){IMAP[x.k]=x;});
+
+/* ---------- 组别池 ---------- */
+var POOLS=[
+ {id:'pro',  name:'职业组',        kind:'组别', needWhitelist:1, f:function(p){return p.m===113&&p.u==='个人'&&p.cat==='职业组';}},
+ {id:'elite',name:'精英组',        kind:'组别', f:function(p){return p.m===113&&p.u==='个人'&&p.cat==='精英组';}},
+ {id:'lg35', name:'传奇 35-39',    kind:'组别', needAge:'35-39', f:function(p){return p.m===113&&p.u==='个人'&&/35-39/.test(p.dv);}},
+ {id:'lg40', name:'传奇 40+',      kind:'组别', needAge:'40+',  f:function(p){return p.m===113&&p.u==='个人'&&/40\+/.test(p.dv);}},
+ {id:'team', name:'混双/团队选手', kind:'池',   f:function(p){return p.m===113&&p.u!=='个人';}},
+ {id:'open', name:'公开赛全体',    kind:'池',   isOpen:1, f:function(p){return p.m===149;}},
+ {id:'all',  name:'总决赛全体',    kind:'池',   f:function(p){return p.m===113;}}
+];
+
+/* ---------- 工具函数 ---------- */
+function med(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y;});var h=(s.length-1)/2;
+  var lo=Math.floor(h),hi2=Math.ceil(h);return lo===hi2?s[lo]:s[lo]+(s[hi2]-s[lo])*(h-lo);}
+function pctOf(v,arr,hi){ // 你击败了百分之多少
+  if(!arr.length)return null;
+  var worse=0,eq=0;
+  arr.forEach(function(x){ if(hi? x<v : x>v) worse++; else if(x===v) eq++; });
+  return (worse+eq/2)/arr.length*100;
+}
+function rankOf(v,arr,hi){
+  var better=arr.filter(function(x){return hi? x>v : x<v;}).length;
+  return better+1;
+}
+function fmt(u,v){
+  if(v==null||isNaN(v))return '—';
+  if(u==='time'){var m=Math.floor(v/60),s=Math.round(v%60);if(s===60){m++;s=0;}return m+':'+String(s).padStart(2,'0');}
+  if(u==='reps')return String(Math.round(v));
+  return (Math.round(v*10)/10)+' kg';
+}
+function parseVal(raw,u){
+  raw=String(raw==null?'':raw).trim();
+  if(!raw)return null;
+  if(u!=='time'){var v=parseFloat(raw.replace(/[^\d.\-]/g,''));return isNaN(v)?null:v;}
+  var m=raw.match(/^(\d{1,3})\s*[:：'′]\s*(\d{1,2})/);
+  if(m)return (+m[1])*60+(+m[2]);
+  var m2=raw.match(/^(\d{1,2})\s*(?:分|min|m)\s*(\d{1,2})/i);
+  if(m2)return (+m2[1])*60+(+m2[2]);
+  var d=raw.replace(/[^\d.]/g,'');
+  var v2=parseFloat(d);
+  if(isNaN(v2))return null;
+  if(v2<60&&!/[:：'′分]/i.test(raw))v2=v2*60;  // 小于 60 的纯数字按分钟理解
+  return v2;
+}
+function hsl(p){ // 0->红, 100->绿
+  p=Math.max(0,Math.min(100,p));
+  var h=(p-8)/92*128; if(h<0)h=0; if(h>128)h=128;
+  var sat=Math.abs(p-50)/50*22+26;
+  var li=94-(p/100)*10;
+  return 'hsl('+Math.round(h)+','+Math.round(sat)+'%,'+Math.round(li)+'%)';
+}
+function level(p){
+  if(p>=95)return{t:'顶尖 · 该组夺牌级',d:'你在这一组属于最前面的一小撮，可以认真考虑冲榜。'};
+  if(p>=85)return{t:'准顶尖 · 前 15%',d:'距离领奖台一步之遥，通常是训练细节决定上下。'};
+  if(p>=70)return{t:'中上 · 前 30%',d:'已经是这一组里的上游，属于能在大规模站上力争前段的水平。'};
+  if(p>=55)return{t:'中偏上',d:'略高于中位，稳住当前水平就能获得不错的排位。'};
+  if(p>=45)return{t:'正中间',d:'你正好在这一组的中位附近，是最"势均力敌"的状态。'};
+  if(p>=30)return{t:'中偏下',d:'离中位还差一点，通常补齐最短的那一项收益最大。'};
+  if(p>=15)return{t:'后段 · 后 30%',d:'这一组对你偏难，先从拉高强度或降低门槛入手。'};
+  return{t:'入门区',d:'该组别目前对你不太现实，建议先从公开赛或大众组积累经验。'};
+}
+
+
+var ECO=(function(){
+  function q(a,p){a=a.slice().sort(function(x,y){return x-y;});var i=(a.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);
+    return lo===hi?a[lo]:a[lo]+(a[hi]-a[lo])*(i-lo);}
+  var pro=D.persons.filter(function(p){return p.m===113&&p.u==='个人'&&p.cat==='职业组'&&p.e!=null;});
+  var opn=D.persons.filter(function(p){return p.m===149&&p.e!=null;});
+  var out={};
+  ['男子','女子'].forEach(function(g){
+    var A=pro.filter(function(p){return p.g===g;}).map(function(p){return p.e;});
+    var B=opn.filter(function(p){return p.g===g;}).map(function(p){return p.e;});
+    if(A.length&&B.length){
+      var ma=q(A,.5),mb=q(B,.5);
+      out[g==='男子'?'m':'f']=fmt('time',mb)+' vs '+fmt('time',ma)+'（慢 '+((mb-ma)/ma*100).toFixed(0)+'%）';
+    }
+  });
+  return out;
+})();
+/* ---------- 输入区渲染 ---------- */
+var state={sex:'女子',age:null,vals:{},dnf:{},reps:{}};
+function isDnfVisible(k){var c=CAPS[k];
+  return IMAP[k].u==='time'&&!!c&&c.cap>0&&(CAPREPS[k]||[]).length>0;}
+function buildInputs(){
+  ['coreItems','otherItems'].forEach(function(id,idx){
+    var host=document.getElementById(id);host.innerHTML='';
+    ITEMS.filter(function(it){return idx===0?it.core:!it.core;}).forEach(function(it){
+      var d=document.createElement('div');
+      d.className='item'+(it.core?' core':'');
+      var cap=CAPS[it.k];
+      var cr=(CAPREPS[it.k]||[]);
+      var isD=isDnfVisible(it.k);
+      var dnfHtml=isD?
+        ('<label class="dnf"><input type="checkbox" data-k="'+it.k+'"> 没做完 / 被关门</label>'+
+         '<input class="repsinp" type="text" data-rk="'+it.k+'" placeholder="限时内完成量 reps，如 85">'+
+         '<div class="hint" style="margin:5px 0 0">关门 '+fmt('time',cap.capSec)+' · 同性别 '+cr.length+' 人被关门</div>')
+        :(cap&&cap.cap>0?'<div class="hint" style="margin:6px 0 0">本项目按完成次数计分，没做完的人天然落在分布最左</div>':'');
+      d.innerHTML='<div class="nm">'+it.n+(it.core?'<span class="tag">核心</span>':'')+'</div>'+
+        '<div class="hint">'+it.hint+((cap&&cap.capSec&&!isD)?(' · 关门 '+fmt('time',cap.capSec)):'')+'</div>'+
+        '<input type="text" data-k="'+it.k+'" placeholder="'+it.ph+'">'+
+        '<div class="pv" data-pv="'+it.k+'"></div>'+dnfHtml;
+      host.appendChild(d);
+    });
+  });
+  document.querySelectorAll('.items input[type=checkbox]').forEach(function(el){
+    el.addEventListener('change',function(){
+      var ri=document.querySelector('.repsinp[data-rk="'+el.dataset.k+'"]');
+      if(ri){ri.classList.toggle('on',el.checked);if(el.checked)ri.focus();}
+    });
+  });
+  document.querySelectorAll('.items input[type=text][data-k]').forEach(function(el){
+    el.addEventListener('input',function(){
+      var k=el.dataset.k,it=IMAP[k];
+      var v=parseVal(el.value,it.u);
+      var pv=document.querySelector('[data-pv="'+k+'"]');
+      if(v==null){pv.textContent='';pv.classList.remove('bad');return;}
+      pv.textContent='= '+fmt(it.u,v);pv.classList.remove('bad');
+    });
+  });
+}
+buildInputs();
+
+/* ---------- 交互 ---------- */
+document.getElementById('sexTabs').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  state.sex=b.dataset.g;
+  this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});
+});
+document.getElementById('clr').addEventListener('click',function(){
+  document.querySelectorAll('.items input[type=text]').forEach(function(x){x.value='';x.classList.remove('on');});
+  document.querySelectorAll('.items input[type=checkbox]').forEach(function(x){x.checked=false;});
+  document.querySelectorAll('.pv').forEach(function(x){x.textContent='';});
+  document.getElementById('age').value='';
+  document.getElementById('outBody').innerHTML='<div class="empty card">填好成绩后点「开始测算」</div>';
+});
+document.getElementById('demo').addEventListener('click',function(){
+  var demo={'r':'36:20','s':'100','sp':'7:57','e':'24:00','a2':'20','a3':'30'};
+  document.querySelectorAll('.items input[type=text][data-k]').forEach(function(x){
+    x.value=demo[x.dataset.k]||'';x.dispatchEvent(new Event('input'));
+  });
+});
+document.getElementById('go').addEventListener('click',run);
+document.getElementById('age').addEventListener('change',function(){state.age=parseInt(this.value)||null;});
+
+/* ---------- 主计算 ---------- */
+function collect(){
+  var vals={},dnf={},reps={};
+  document.querySelectorAll('.items input[type=text][data-k]').forEach(function(x){
+    var k=x.dataset.k,v=parseVal(x.value,IMAP[k].u);
+    if(v!=null&&(IMAP[k].u!=='time'||v>0))vals[k]=v;
+  });
+  document.querySelectorAll('.items input[type=text][data-rk]').forEach(function(x){
+    var k=x.dataset.rk;
+    var cb=document.querySelector('.items input[type=checkbox][data-k="'+k+'"]');
+    if(!cb||!cb.checked)return;
+    dnf[k]=true;
+    var v=parseFloat(String(x.value).replace(/[^\d.]/g,''));
+    if(!isNaN(v))reps[k]=v;
+  });
+  return {vals:vals,dnf:dnf,reps:reps};
+}
+
+function run(){
+  var c=collect();
+  state.vals=c.vals;state.dnf=c.dnf;state.reps=c.reps;
+  state.age=parseInt(document.getElementById('age').value)||null;
+  var keys=Object.keys(state.vals);
+  if(!keys.length){document.getElementById('outBody').innerHTML='<div class="empty card">至少填一项成绩</div>';return;}
+  render();
+}
+
+function render(){
+  var g=state.sex,age=state.age,vals=state.vals,dnf=state.dnf;
+  var reps=state.reps||{};
+  var keyMap={};Object.keys(vals).forEach(function(k){keyMap[k]=1;});
+  Object.keys(dnf).forEach(function(k){keyMap[k]=1;});          // 只勾了「没做完」的项目也要进入计算
+  var keys=Object.keys(keyMap).filter(function(k){return !dnf[k]||reps[k]!=null;}); // 参与计算的项目
+  var dnfKeys=keys.filter(function(k){return dnf[k];});                             // 被关门且填了完成量
+  var dnfNA=Object.keys(dnf).filter(function(k){return reps[k]==null;});            // 勾了但没填完成量
+
+  // 每个池 × 每个项目
+  var res={};
+  POOLS.forEach(function(pl){
+    res[pl.id]={pool:pl,cells:[],pcts:[]};
+    var arr=ALL.filter(function(p){return p.g===g&&pl.f(p);});
+    res[pl.id].n=arr.length;
+    keys.forEach(function(k){
+      var vs=arr.map(function(p){return p[k];}).filter(function(v){return v!=null&&v>0;});
+      if(dnf[k]&&reps[k]!=null){
+        var capArr=(CAPREPS[k]||[]).filter(function(r){return r.g===g&&pl.f(r);});
+        var finN=arr.filter(function(p){return p[k]!=null&&p[k]>0;}).length;
+        if(capArr.length<4){res[pl.id].cells.push({k:k,ok:false,n:capArr.length,cap:true});return;}
+        var my=reps[k];
+        var cw=capArr.filter(function(r){return r.num<my;}).length;
+        var ce=capArr.filter(function(r){return r.num===my;}).length;
+        var cpc=(cw+ce/2)/(finN+capArr.length)*100;
+        res[pl.id].cells.push({k:k,ok:true,cap:true,n:finN+capArr.length,pct:cpc,
+          capRank:cw+1,capN:capArr.length,
+          capMed:med(capArr.map(function(r){return r.num;}))});
+        res[pl.id].pcts.push(cpc);
+        return;
+      }
+      if(vs.length<8){res[pl.id].cells.push({k:k,ok:false,n:vs.length});return;}
+      var pc=pctOf(vals[k],vs,IMAP[k].hi);
+      res[pl.id].cells.push({k:k,ok:true,n:vs.length,pct:pc,med:med(vs),
+        rank:rankOf(vals[k],vs,IMAP[k].hi),best:IMAP[k].hi?Math.max.apply(null,vs):Math.min.apply(null,vs)});
+      res[pl.id].pcts.push(pc);
+    });
+    res[pl.id].mean=res[pl.id].pcts.length?
+      res[pl.id].pcts.reduce(function(a,b){return a+b;},0)/res[pl.id].pcts.length:null;
+  });
+
+  var overall=res['all'].mean;
+  var groups=POOLS.filter(function(p){return p.kind==='组别';});
+
+  // 推荐组别：|mean-50| 最小
+  var eligible=groups.map(function(pl){
+    var r=res[pl.id];var ok=true,why='';
+    if(r.mean==null){ok=false;why='该项目数据不足';}
+    if(age!=null){
+      if(pl.needAge==='35-39'&&age<35){ok=false;why='未满 35 岁，暂不能报传奇组';}
+      else if(pl.needAge==='35-39'&&age>=40){ok=false;why='已满 40 岁，应报 40+';}
+      else if(pl.needAge==='40+'&&age<40){ok=false;why='未满 40 岁，暂不能报 40+';}
+    }
+    return {pl:pl,mean:r.mean,dist:(r.mean==null||!ok)?999:Math.abs(r.mean-50),ok:ok,why:why};
+  });
+  var best=eligible.filter(function(x){return x.mean!=null;}).sort(function(a,b){return a.dist-b.dist;})[0];
+
+  // 最强 / 最弱项（用总决赛全体）
+  var validAll=res['all'].cells.filter(function(c){return c.ok;});
+  var strong=validAll.slice().sort(function(a,b){return b.pct-a.pct;})[0];
+  var weak=validAll.slice().sort(function(a,b){return a.pct-b.pct;})[0];
+
+  var lv=level(overall==null?0:overall);
+  var sexCls=g==='女子'?'g-f':'g-m';
+
+  /* ---- 输出 HTML ---- */
+  var html='';
+  html+='<div class="kpis">'+
+    '<div class="kpi hl"><div class="v">'+'<span class="'+sexCls+'">'+(overall==null?'—':Math.round(overall))+'</span> <span style="font-size:15px;font-weight:600;color:var(--ink3)">分位</span></div>'+
+      '<div class="l">总决赛'+g+'全体综合水平 · 共 '+res['all'].n+' 人</div>'+
+      '<div class="e">'+lv.t+'</div></div>'+
+    '<div class="kpi"><div class="v" style="font-size:20px">'+(best?best.pl.name:'—')+'</div>'+
+      '<div class="l">'+(best?('与你最接近的组别 · 该组你会落在 '+Math.round(best.mean)+' 分位'):'数据不足')+'</div>'+
+      '<div class="e">'+(best?lv.d:'换个项目再试')+'</div></div>'+
+    '<div class="kpi"><div class="v" style="font-size:19px">'+(strong?IMAP[strong.k].n:'—')+'</div>'+
+      '<div class="l">你的最强项 · '+(strong?Math.round(strong.pct)+' 分位':'—')+'</div>'+
+      '<div class="e">'+(strong?fmt(IMAP[strong.k].u,vals[strong.k]):'')+'</div></div>'+
+    '<div class="kpi"><div class="v" style="font-size:19px">'+(weak?IMAP[weak.k].n:'—')+'</div>'+
+      '<div class="l">最短板 · '+(weak?Math.round(weak.pct)+' 分位':'—')+'</div>'+
+      '<div class="e">'+(weak?fmt(IMAP[weak.k].u,vals[weak.k]):'')+'</div></div>'+
+  '</div>';
+
+  // 图1 + 图2
+  html+='<div class="grid2">'+
+    '<div class="card"><div class="card-t">你在各个组别 / 池子里能排第几</div>'+
+      '<div class="card-s">综合百分位（你填的所有项目等权平均）。越靠右越强，50 处为该组中位。</div>'+
+      '<div id="c_grp" class="chart" style="height:330px"></div></div>'+
+    '<div class="card"><div class="card-t">距离目标组别的中位，还差多少</div>'+
+      '<div class="card-s">100% = 正好达到该组中位数；<100% 表示还没到中位水平。</div>'+
+      '<div class="toolbar" style="display:flex;align-items:center;gap:10px;margin:10px 0 4px">'+
+      '<select id="tgt" style="font:inherit;font-size:13px;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:#fff">'+
+      groups.map(function(pl){var r=res[pl.id];return '<option value="'+pl.id+'"'+(best&&pl.id===best.pl.id?' selected':'')+'>'+pl.name+'</option>';}).join('')+
+      '</select><span class="mut" style="font-size:12px">作为对比目标</span></div>'+
+      '<div id="c_gap" class="chart" style="height:296px"></div></div>'+
+  '</div>';
+
+  // 明细矩阵表
+  html+='<div class="card"><div class="card-t">逐项百分位矩阵</div>'+
+    '<div class="card-s">数字 = 你在该组击败了百分之多少的同组同性别人；括号为该项有效人数。样本少于 8 人的组合不出数。</div>'+
+    '<div class="tw" style="margin-top:10px"><table><thead><tr><th>项目 · 你的成绩</th>'+
+    POOLS.map(function(pl){return '<th>'+pl.name+'<div class="mut" style="font-weight:500">n='+res[pl.id].n+'</div></th>';}).join('')+
+    '</tr></thead><tbody>';
+  ITEMS.forEach(function(it){
+    if(vals[it.k]==null&&!dnf[it.k])return;
+    var isCap=!!(dnf[it.k]&&reps[it.k]!=null);
+    var myTxt=dnf[it.k]?('<span style="color:#b8791f;font-weight:600">未完赛</span> · '+
+      (isCap?fmt('reps',reps[it.k])+' reps':'未填完成量')):fmt(it.u,vals[it.k]);
+    html+='<tr><td>'+it.n+' <span class="mut">'+myTxt+'</span></td>';
+    POOLS.forEach(function(pl){
+      var cell=res[pl.id].cells.filter(function(c){return c.k===it.k;})[0];
+      if(!cell||!cell.ok){var cn=(cell&&cell.n)||0;
+        html+='<td class="mut">'+(cn>0?('样本 '+cn+(dnf[it.k]?'（关门组不足）':'（不足）')):'—')+'</td>';return;}
+      if(cell.cap){
+        html+='<td><span class="cell" style="background:'+hsl(cell.pct)+'">'+Math.round(cell.pct)+
+          '<span style="font-size:10px"> 估</span></span>'+
+          '<div class="mut" style="font-size:11px;margin-top:2px">关门组 '+cell.capRank+'/'+cell.capN+
+          ' · 中位 '+cell.capMed+' reps</div></td>';return;
+      }
+      html+='<td><span class="cell" style="background:'+hsl(cell.pct)+'">'+Math.round(cell.pct)+'</span>'+
+        '<div class="mut" style="font-size:11px;margin-top:2px">'+cell.rank+'/'+cell.n+' · 中位 '+fmt(it.u,cell.med)+'</div></td>';
+    });
+    html+='</tr>';
+  });
+  html+='</tbody></table></div>';
+  html+='</div>';
+  if(vals.e!=null){
+    html+='<div class="note"><b>关于 ENDURANCE</b>：<b>总决赛</b>里该项目原本面向所有组别设置，今年因天气原因最终<b>只有职业组完成</b>，其余总决赛组别没有成绩；<b>公开赛</b>的个人组别则完整设置了该项目（男 56 / 女 35 共 91 条有效成绩）。'+
+      '所以这一项可与「职业组」「混双/团队选手」「公开赛全体」「总决赛全体」四列对照，但无法与精英组 / 传奇组对照。'+
+      '参考：同性别中位，公开赛比职业组慢 —— 男子 '+ECO.m+' ，女子 '+ECO.f+'。</div>';
+  }
+  if(dnfKeys.length){
+    html+='<div class="note warn" style="margin-top:12px"><b>被关门项目（'+dnfKeys.length+' 项）</b>：'+
+      dnfKeys.map(function(k){return IMAP[k].n;}).join('、')+
+      ' —— 已按你填写的完成量参与定位。估算口径：<b>假设全部完赛者都优于未完赛者</b>，未完赛者之间按完成量排序，'+
+      '分母是「同组别、同性别的完赛人数 + 被关门人数」。矩阵表里标「估」的单元格即为此口径。</div>';
+  }
+  if(dnfNA.length){
+    html+='<div class="note warn" style="margin-top:12px"><b>你勾选了「没做完」但还没填完成量</b>：'+
+      dnfNA.map(function(k){return IMAP[k].n;}).join('、')+
+      ' —— 填上关门限时内<b>实际完成的 reps 数</b>，就能定位到被关门人群里的具体名次（不同项目完成量单位不同，填纯数字即可）。</div>';
+  }
+
+  // 最近对手
+  var rivals=pickRivals(keys,vals,g);
+  if(rivals.length){
+    html+='<div class="card"><div class="card-t">跟你水平最近的真实选手</div>'+
+      '<div class="card-s">在总决赛'+g+'选手里，按你填写的项目做距离匹配找出的最接近者（'+g+'同性别）。</div><div class="rivals">';
+    rivals.forEach(function(r){
+      html+='<div class="rival"><div class="nm">'+r.name+'<span>'+r.dv.replace('职业组 ','职业·').replace('精英','精英·').replace('传奇 ','传奇 ')+'</span></div>'+
+        '<div class="rl">'+r.txt+'</div></div>';
+    });
+    html+='</div></div>';
+  }
+
+  // 资格提示
+  if(age!=null){
+    var tips=[];
+    groups.forEach(function(pl){
+      var e2=eligible.filter(function(x){return x.pl.id===pl.id;})[0];
+      if(e2&&e2.why)tips.push('<b>'+pl.name+'</b>：'+e2.why);
+    });
+    if(tips.length)html+='<div class="note warn"><b>按你填的 '+age+' 岁，报名资格提醒</b><br>'+tips.join('<br>')+'</div>';
+  }
+  html+='<div class="note"><b>怎么读</b>：你要找的是<b>离 50 分位最近的那个组别</b>——那是你真正势均力敌的战场；如果一个组别你已经在 70 分位以上，说明你在那儿会觉得轻松，可以考虑往上够一够。反过来，如果某组别你只有 20 分位，建议先补短板（表格最后一行是你的最短板）。<b>注意</b>：职业组通常需要资格/邀请，不是公开报名。';
+
+  document.getElementById('outBody').innerHTML=html;
+  drawGrp(res,groups,POOLS,g);
+  var tgtSel=document.getElementById('tgt');
+  function drawGap(){drawGapChart(res,tgtSel.value,keys,vals);}
+  drawGap();
+  tgtSel.addEventListener('change',drawGap);
+}
+
+function pickRivals(keys,vals,g){
+  if(!keys.length)return [];
+  var pool=ALL.filter(function(p){return p.m===113&&p.g===g;});
+  var meds={};keys.forEach(function(k){
+    meds[k]=med(pool.map(function(p){return p[k];}).filter(function(v){return v!=null&&v>0;}))||1;});
+  var scored=pool.map(function(p){
+    var cnt=0,sum=0,txt=[];
+    keys.forEach(function(k){
+      if(p[k]==null||p[k]<=0)return;
+      var d=Math.abs(p[k]-vals[k])/meds[k];
+      sum+=d*d;cnt++;
+    });
+    if(!cnt)return null;
+    return {name:p.n,dv:p.dv,dist:Math.sqrt(sum/cnt),cnt:cnt,
+      txt:keys.filter(function(k){return p[k]!=null&&p[k]>0;}).map(function(k){
+        return IMAP[k].n+' '+fmt(IMAP[k].u,p[k]);}).join(' · ')};
+  }).filter(function(x){return x&&x.cnt>=Math.max(1,keys.length-1);});
+  scored.sort(function(a,b){return a.dist-b.dist;});
+  var out=[],seen={};
+  scored.forEach(function(x){
+    if(out.length>=3)return;
+    if(seen[x.name])return;seen[x.name]=1;out.push(x);
+  });
+  return out;
+}
+
+function drawGrp(res,groups,POOLS,g){
+  var rows=[];
+  ['all','team','open'].concat(groups.map(function(p){return p.id;})).forEach(function(id){
+    var r=res[id];if(r.mean==null)return;
+    rows.push({name:r.pool.name,val:Math.round(r.mean*10)/10,kind:r.pool.kind});
+  });
+  rows.sort(function(a,b){return a.val-b.val;});
+  var c=echarts.init(document.getElementById('c_grp'));
+  c.setOption({
+    grid:{left:110,right:56,top:14,bottom:34},
+    xAxis:{type:'value',min:0,max:100,name:'百分位',nameLocation:'middle',nameGap:22,
+      axisLine:{lineStyle:{color:'#dfe4ec'}},axisLabel:{fontSize:11,color:'#8a93a3'},
+      splitLine:{lineStyle:{color:'#f0f2f6'}}},
+    yAxis:{type:'category',data:rows.map(function(r){return r.name;}),
+      axisLine:{show:false},axisTick:{show:false},
+      axisLabel:{fontSize:12,color:'#4a5261',fontWeight:function(v,i){return rows[i].kind==='组别'?600:400;}}},
+    tooltip:{trigger:'item',formatter:function(p){
+      var r=rows[p.dataIndex];return r.name+'<br><b>'+r.val+' 分位</b><br><span style="color:#8a93a3">'+
+        (r.kind==='组别'?'组别':'参照池')+'</span>';}},
+    series:[{
+      type:'bar',data:rows.map(function(r){return {
+        value:r.val,
+        itemStyle:{color:hsl(r.val),borderColor:r.kind==='组别'?'#aab3c2':'#e2e6ed',borderWidth:r.kind==='组别'?1:1,
+          borderRadius:[0,5,5,0]}
+      };}),
+      barWidth:'52%',
+      label:{show:true,position:'right',fontSize:12,fontWeight:600,color:'#14181f',
+        formatter:function(p){return p.value+'%';}},
+      markLine:{silent:true,symbol:'none',
+        data:[{xAxis:50,lineStyle:{color:'#c0392b88',type:'dashed',width:1.5},
+          label:{formatter:'中位',color:'#c0392b',fontSize:11,position:'insideEndTop',
+            backgroundColor:'rgba(255,255,255,.92)',padding:[2,5],borderRadius:3}}]}
+    }]
+  },true);
+  window.addEventListener('resize',function(){try{c.resize();}catch(e){}});
+}
+
+function drawGapChart(res,tgtId,keys,vals){
+  var r=res[tgtId];if(!r)return;
+  var rows=[];
+  keys.forEach(function(k){
+    var cell=r.cells.filter(function(c){return c.k===k;})[0];
+    if(!cell||!cell.ok||cell.med==null)return;
+    var it=IMAP[k];
+    var ratio=it.hi? vals[k]/cell.med : cell.med/vals[k]; // 相对中位
+    var shown=Math.min(Math.round(ratio*1000)/10,220);   // 显示截断在 220%，避免极端值拉伸坐标轴
+    rows.push({name:it.n,pct:shown,raw:Math.round(ratio*1000)/10,you:fmt(it.u,vals[k]),med:fmt(it.u,cell.med)});
+  });
+  rows.sort(function(a,b){return a.pct-b.pct;});
+  var c=echarts.init(document.getElementById('c_gap'));
+  if(!rows.length){c.setOption({title:{text:'该组别暂无可用数据',left:'center',top:'middle',
+    textStyle:{fontSize:13,color:'#8a93a3',fontWeight:400}}});return;}
+  c.setOption({
+    grid:{left:96,right:76,top:14,bottom:40},
+    xAxis:{type:'value',max:Math.max(150,Math.ceil(Math.max.apply(null,rows.map(function(x){return x.pct;}))/10)*10),
+      name:'% of 组中位',nameLocation:'middle',nameGap:26,
+      axisLine:{lineStyle:{color:'#dfe4ec'}},axisLabel:{fontSize:11,color:'#8a93a3',formatter:'{value}%'},
+      splitLine:{lineStyle:{color:'#f0f2f6'}}},
+    yAxis:{type:'category',data:rows.map(function(x){return x.name;}),
+      axisLine:{show:false},axisTick:{show:false},axisLabel:{fontSize:12,color:'#4a5261'}},
+    tooltip:{trigger:'item',formatter:function(p){
+      var x=rows[p.dataIndex];return '<b>'+x.name+'</b><br>你的成绩：'+x.you+'<br>该组中位：'+x.med+
+        '<br><b>达标 '+x.pct+'%</b>';}},
+    series:[{type:'bar',data:rows.map(function(x){
+        return {value:x.pct,raw:x.raw,
+          itemStyle:{color:x.raw>=100?'#0f9d76':(x.raw>=85?'#8fc7a8':'#e6a26b'),
+            borderRadius:[0,5,5,0]}};}),
+      barWidth:'52%',
+      label:{show:true,position:'right',fontSize:11.5,fontWeight:600,color:'#14181f',
+        formatter:function(p){return p.data.raw+'%';}},
+      markLine:{silent:true,symbol:'none',
+        data:[{xAxis:100,lineStyle:{color:'#14181f66',type:'dashed',width:1.4},
+          label:{formatter:'中位线',color:'#14181f',fontSize:11,position:'insideEndTop',
+            backgroundColor:'rgba(255,255,255,.92)',padding:[2,5],borderRadius:3}}]}
+    }]
+  },true);
+  window.addEventListener('resize',function(){try{c.resize();}catch(e){}});
+}
+})();
+</script>
+
+<div class="afc-foot">
+  <div class="afc-fbox">
+    <b>免责声明：</b>本站内容为个人基于公开成绩榜的统计分析，<b>仅供娱乐与参考，不构成任何训练 / 健康 / 参赛建议</b>，
+    亦不代表官方结论。成绩可能存在口径差异、缺项或人工判别误差，一切请以主办方最终公布为准。依据本页内容进行的任何训练或参赛决策，风险与后果由使用者自行承担。
+  </div>
+  <div>
+    数据范围：2026 全力游戏<b>总决赛</b>与<b>公开赛</b>官方成绩接口 · 含个人与团队组别<br>
+    想查看全部选手的完整成绩与名次？请前往<b>微信搜索「全力游戏」小程序 → 排行 tab</b> 查看（以官方公布为准）。<br>
+    原始成绩版权归属赛事主办方；本页面为个人非商业的数据整理与可视化，<b>非官方网站</b>。生成于 2026-10-28。
   </div>
 </div>
+
 
 <script>
 (function(){
@@ -120,5 +711,6 @@
   });
 })();
 </script>
+
 </body>
 </html>
