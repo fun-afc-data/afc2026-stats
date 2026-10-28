@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 全力游戏 · 成绩数据站</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --ink:#14181f; --ink2:#4a5261; --ink3:#8a93a3;
+    --line:#e6e9ef; --accent:#0f9d76; --male:#1c6fd6; --female:#d6336c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none}
+  /* 免责 banner */
+  .afc-disc{position:relative;background:#fff8e6;border-bottom:1px solid #f0dfae;padding:11px 46px 11px 18px;
+    font-size:12.6px;line-height:1.7;color:#7a5a12;}
+  .afc-disc b{color:#5d4308}
+  .afc-disc .afc-dt{font-weight:700;letter-spacing:.02em;margin-right:6px}
+  .afc-disc .afc-x{position:absolute;right:12px;top:9px;width:22px;height:22px;line-height:20px;text-align:center;
+    border:1px solid #e2cd93;border-radius:6px;background:#fffdf6;color:#8a6a20;cursor:pointer;font-size:14px;user-select:none}
+  .afc-disc .afc-x:hover{background:#f7edd2}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 30px 70px}
+  header{padding:46px 0 8px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+  h1{font-size:30px;line-height:1.25;margin:10px 0 10px;letter-spacing:-.02em}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.8;max-width:820px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;
+    transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(20,24,31,.09);border-color:#cfd6e2}
+  .card .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;color:#fff;background:var(--accent);
+    padding:3px 9px;border-radius:6px}
+  .card.sec .tag{background:var(--male)}
+  .card h2{font-size:19px;margin:12px 0 8px;letter-spacing:-.01em}
+  .card p{color:var(--ink2);font-size:13.4px;line-height:1.78;margin:0 0 14px}
+  .card ul{margin:0 0 14px;padding-left:17px;color:var(--ink2);font-size:12.8px;line-height:1.85}
+  .card .go{font-size:13px;font-weight:600;color:var(--accent)}
+  .card.sec .go{color:var(--male)}
+  .meta{margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;
+    color:var(--ink2);font-size:12.8px;line-height:1.9}
+  .meta b{color:var(--ink)}
+  .afc-foot{margin:36px 0 0;padding:20px 0 30px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.2px;line-height:1.85}
+  .afc-foot .afc-fbox{background:rgba(255,248,230,.72);border:1px solid #f0dfae;border-radius:10px;padding:12px 15px;color:#7a5a12;margin-bottom:12px}
+  .afc-foot .afc-fbox b{color:#5d4308}
+</style>
+</head>
+<body>
+
+<div class="afc-disc" id="afcDisc">
+  <span class="afc-dt">免责声明</span>
+  本站所有数据抓取自 2026 全力游戏（ALLTRA GAMES）官方公开成绩榜，经人工清洗后自行统计，<b>仅供个人娱乐、赛后复盘与数据交流使用</b>；
+  不构成任何训练、运动表现、医疗、营养或参赛报名的建议，也<b>不是官方排名或官方成绩证明</b>。数据可能存在遗漏或误差，<b>请以主办方最终公布的成绩为准</b>。
+  <span class="afc-x" id="afcDiscX" title="知道了，收起">×</span>
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ALLTRA GAMES 2026 · Data Station</div>
+    <h1>2026 全力游戏 · 成绩数据站</h1>
+    <div class="sub">
+      收录「2026 全力游戏总决赛」（matchId 113）与「2026 全力游戏公开赛」（matchId 149）官方成绩接口的完整成绩，
+      含个人与团队组别（团队成员成绩已逐人还原）。下面是两个入口：<b>看全局</b>，或者<b>测自己</b>。
+    </div>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="./selftest.html">
+      <span class="tag">推荐先玩</span>
+      <h2>我的水平自测</h2>
+      <p>填性别 + 你的成绩，看看自己放到总决赛的各个组别里，大概能站到百分位多少。</p>
+      <ul>
+        <li>覆盖 7K 跑步 / 5RM 硬拉 / SPEED / ENDURANCE 等项目</li>
+        <li>对比池：职业组 · 精英组 · 传奇 35-39 / 40+ · 混双团队选手 · 公开赛</li>
+        <li>支持「没做完 / 被关门」的情况，按完成量估算</li>
+      </ul>
+      <div class="go">开始自测 →</div>
+    </a>
+
+    <a class="card sec" href="./analysis.html">
+      <span class="tag">深度分析</span>
+      <h2>成绩可视化报告</h2>
+      <p>10 个章节的分布、对比与相关性拆解：基线、性别、年龄、组别、中外、项目关联、混双协同。</p>
+      <ul>
+        <li>脊线图 / 箱线图 / 热力图 / 散点矩阵</li>
+        <li>含显著性检验（置换检验 p 值）与协同度排行</li>
+        <li>底部可查全部选手明细表</li>
+      </ul>
+      <div class="go">查看报告 →</div>
+    </a>
+  </div>
+
+  <div class="meta">
+    <b>数据范围</b>：总决赛 113 + 公开赛 149，成绩为 0 / DNF / DNS 的记录已从统计中剔除。<br>
+    <b>分析项目</b>：7K 跑步、5RM 硬拉、SPEED、ENDURANCE，以及 ODYSSEY / ALLTRA 三部曲等其余项目的完成情况。<br>
+    <b>口径提醒</b>：国籍 / 来源地区依据姓名拼音人工判别后复核，仍有少量待定；团队排名采用三项合计自行计算（官方 teamRank 与成员成绩对不上，未采用）。
+  </div>
+
+  <div class="afc-foot">
+    <div class="afc-fbox">
+      <b>免责声明：</b>本站内容为个人基于公开成绩榜的统计分析，<b>仅供娱乐与参考，不构成任何训练 / 健康 / 参赛建议</b>，亦不代表官方结论。
+      依据本站内容进行的任何训练或参赛决策，风险与后果由使用者自行承担。
+    </div>
+    <div>原始成绩版权归属赛事主办方，本页面仅作非商业的数据整理与可视化呈现。生成于 2026-10-28。</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='afcDiscClosed__index';
+  var b=document.getElementById('afcDisc'), x=document.getElementById('afcDiscX');
+  if(!b) return;
+  try{ if(localStorage.getItem(KEY)==='1'){ b.style.display='none'; } }catch(e){}
+  if(x) x.addEventListener('click',function(){
+    b.style.display='none';
+    try{ localStorage.setItem(KEY,'1'); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

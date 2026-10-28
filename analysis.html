@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 全力游戏 ALLTRA GAMES · 7K / 5RM硬拉 / SPEED 成绩分析</title>
+<script src="./echarts.min.js"></script>
+<script src="./data.js"></script>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#ffffff; --ink:#14181f; --ink2:#4a5261; --ink3:#8a93a3;
+    --line:#e6e9ef; --male:#1c6fd6; --female:#d6336c; --accent:#0f9d76;
+    --radius:14px; --pad:38px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 var(--pad) 90px}
+
+  header{padding:40px 0 18px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+  h1{font-size:29px;line-height:1.25;margin:10px 0 8px;letter-spacing:-.02em}
+  .sub{color:var(--ink2);font-size:14px;line-height:1.75;max-width:880px}
+  .sub code{background:#eceff4;padding:1px 6px;border-radius:5px;font-size:12.5px}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(245,246,248,.88);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);margin:18px calc(-1 * var(--pad)) 0;padding:0 var(--pad)}
+  nav div{max-width:1180px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  nav div::-webkit-scrollbar{display:none}
+  nav a{white-space:nowrap;font-size:13px;color:var(--ink2);padding:13px 10px;border-bottom:2px solid transparent;font-weight:500}
+  nav a:hover{color:var(--ink);border-bottom-color:#cdd3de}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0 6px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .kpi .v{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+  .kpi .l{font-size:12.5px;color:var(--ink3);margin-top:7px;line-height:1.5}
+  .kpi.hl{background:#f0faf6;border-color:#c7ebdd}
+
+  section{margin-top:44px;scroll-margin-top:64px}
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+  .sec-n{font-size:12px;font-weight:700;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;letter-spacing:.04em}
+  h2{font-size:20px;margin:0;letter-spacing:-.01em}
+  .sec-d{color:var(--ink2);font-size:13.5px;line-height:1.8;margin:10px 0 0;max-width:920px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 20px 14px;margin-top:16px}
+  .card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:6px}
+  .card-t{font-size:14.5px;font-weight:650}
+  .card-s{font-size:12.5px;color:var(--ink3);margin-top:4px;line-height:1.6}
+  .chart{width:100%;height:420px}
+  .chart.tall{height:480px}
+  .chart.short{height:330px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+  .note{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid #b9c3d4;
+    border-radius:10px;padding:13px 16px;margin-top:14px;font-size:12.8px;color:var(--ink2);line-height:1.75}
+  .note b{color:var(--ink)}
+  .note.warn{border-left-color:#e0a344;background:#fffdf7}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0 12px}
+  select,input[type=search]{font:inherit;font-size:13px;padding:8px 11px;border:1px solid var(--line);
+    border-radius:9px;background:#fff;color:var(--ink);outline:none}
+  select:focus,input:focus{border-color:#b9c3d4}
+  .count{font-size:12.5px;color:var(--ink3);margin-left:auto}
+  .tw{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  thead th{position:sticky;top:0;background:#fafbfc;text-align:left;font-weight:600;font-size:12px;
+    color:var(--ink2);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:2}
+  tbody td{padding:9px 12px;border-bottom:1px solid #f0f2f6;white-space:nowrap}
+  tbody tr:hover{background:#fafbfd}
+  .g-m{color:var(--male);font-weight:600}
+  .g-f{color:var(--female);font-weight:600}
+  .mut{color:var(--ink3)}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .ovl{background:rgba(20,24,31,.055);font-weight:700}
+
+  .legend-inline{display:flex;gap:16px;font-size:12.5px;color:var(--ink2);align-items:center}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+  .tabs{display:inline-flex;gap:2px;padding:3px;background:#f1f3f7;border:1px solid var(--line);border-radius:9px;flex:none}
+  .tabs button{appearance:none;border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:600;
+    color:var(--ink3);padding:5px 14px;border-radius:6px;cursor:pointer;transition:.15s;line-height:1.4}
+  .tabs button:hover{color:var(--ink)}
+  .tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(20,24,31,.10)}
+  .tabs button.on[data-g="男子"]{color:var(--male)}
+  .tabs button.on[data-g="女子"]{color:var(--female)}
+  .tabs button .cnt{font-weight:500;font-size:11px;opacity:.75;margin-left:4px}
+
+  footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.9}
+
+  @media (max-width:1000px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2,.grid3,.grid4{grid-template-columns:1fr}
+    h1{font-size:23px}
+    :root{--pad:22px}
+  }
+
+  .scopebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 4px;padding:10px 14px;
+    background:#fff;border:1px solid #e6e9ef;border-radius:12px;box-shadow:0 1px 2px rgba(20,24,31,.04)}
+  .scopebar .sb-l{font-size:12.5px;color:#5a6474;font-weight:650}
+  .scopebar .sb{appearance:none;border:1px solid #dde2ea;background:#f7f8fa;color:#4a5261;
+    font:600 12.5px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;
+    padding:6px 14px;border-radius:999px;cursor:pointer;transition:all .15s}
+  .scopebar .sb:hover{border-color:#b9c3d2;color:#14181f}
+  .scopebar .sb.on{background:#14181f;border-color:#14181f;color:#fff}
+  .scopebar .sb-note{font-size:11.5px;color:#8a93a3}
+
+  /* ===== 免责声明 ===== */
+  .afc-disc{position:relative;background:#fff8e6;border-bottom:1px solid #f0dfae;padding:11px 46px 11px 18px;
+    font-size:12.6px;line-height:1.7;color:#7a5a12;}
+  .afc-disc b{color:#5d4308}
+  .afc-disc .afc-dt{font-weight:700;letter-spacing:.02em;margin-right:6px}
+  .afc-disc .afc-x{position:absolute;right:12px;top:9px;width:22px;height:22px;line-height:20px;text-align:center;
+    border:1px solid #e2cd93;border-radius:6px;background:#fffdf6;color:#8a6a20;cursor:pointer;font-size:14px;user-select:none}
+  .afc-disc .afc-x:hover{background:#f7edd2}
+  .afc-foot{margin:44px 0 0;padding:22px 0 34px;border-top:1px solid var(--line,#e6e9ef);
+    color:var(--ink3,#8a93a3);font-size:12.2px;line-height:1.85}
+  .afc-foot .afc-fbox{background:rgba(255,248,230,.72);border:1px solid #f0dfae;border-radius:10px;padding:12px 15px;color:#7a5a12;margin-bottom:13px}
+  .afc-foot .afc-fbox b{color:#5d4308}
+  .afc-foot a{text-decoration:underline;text-underline-offset:2px}
+
+</style>
+</head>
+<body>
+
+<div class="afc-disc" id="afcDisc">
+  <span class="afc-dt">免责声明</span>
+  本页所有数据抓取自 2026 全力游戏（ALLTRA GAMES）官方公开成绩榜，经人工清洗后自行统计，<b>仅供个人娱乐、赛后复盘与数据交流使用</b>；
+  不构成任何训练、运动表现、医疗、营养或参赛报名的建议，也<b>不是官方排名或官方成绩证明</b>。
+  受接口口径、缺项、退赛 / 被关门、人工判别国籍与组别等因素影响，数据可能存在遗漏或误差，<b>请以主办方最终公布的成绩为准</b>。
+  若你是榜单中的选手且发现信息有误，欢迎指出更正。
+  <span class="afc-x" id="afcDiscX" title="知道了，收起">×</span>
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">ALLTRA GAMES 2026 · Project One</div>
+  <h1>2026 全力游戏：7K 跑步 / 5RM 硬拉 / SPEED 成绩分析</h1>
+  <div class="sub">
+    数据来自 <code>afchampionship.project1.team</code> 官方排行榜接口，赛事为「2026 全力游戏总决赛」与「2026 全力游戏公开赛」，
+    含个人与团队组别（团队成员成绩已逐人还原）。分析主线：<b>整体基线 → 性别差异 → 年龄差异 → 组别差异 → 中外对比 → 项目间关联</b>。
+    成绩为 0、DNF / DNS 的记录<b>已从全部统计中剔除</b>。<br>
+    默认统计范围为<b>总决赛</b>；公开赛为线上赛（只有硬拉 / SPEED 两项，水平与总决赛差异较大），可用下方开关并入一起看。
+    团队（混双 / 职业）成绩仅总决赛有公布，公开赛双人组别官方榜单为空。<br>
+    分析项目为 <b>7K 跑步 / 5RM 硬拉 / SPEED / ENDURANCE</b> 四项。ENDURANCE 的覆盖范围：<b>总决赛只有职业组完成</b>（80 条，含职业团队成员），精英组 / 传奇组 / 精英混双团队因天气未产生成绩；<b>公开赛个人组别则全员设置此项目</b>（91 条有效成绩）。切换到「总决赛 + 公开赛」范围可直接对比两者差距。
+  </div>
+</header>
+
+<nav><div>
+  <a href="#s0">总览</a>
+  <a href="#s1">整体基线</a>
+  <a href="#s2">性别差异</a>
+  <a href="#s3">年龄差异</a>
+  <a href="#s4">组别差异</a>
+  <a href="#s5">中外对比</a>
+  <a href="#s6">项目间关联</a>
+  <a href="#s7">其余项目</a>
+  <a href="#s8">混双协同</a>
+  <a href="#s9">明细表</a>
+</nav></div>
+
+<div class="scopebar">
+  <span class="sb-l">统计范围</span>
+  <button class="sb" data-scope="final">总决赛</button>
+  <button class="sb" data-scope="all">总决赛 + 公开赛</button>
+  <button class="sb" data-scope="open">仅公开赛</button>
+  <span class="sb-note" id="sb_note"></span>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="v" id="k1">—</div><div class="l">进入分析的选手<br><span class="mut">剔除 0 / DNF 后的有效人数</span></div></div>
+  <div class="kpi"><div class="v" id="k2">—</div><div class="l">有效成绩条目<br><span class="mut">人 × 项目</span></div></div>
+  <div class="kpi hl"><div class="v" id="k3">—</div><div class="l">中国 / 海外<br><span class="mut">按姓名来源判定，可复核</span></div></div>
+  <div class="kpi"><div class="v" id="k4">—</div><div class="l">组别数<br><span class="mut" id="k4m"></span></div></div>
+</div>
+
+<!-- ============ 00 总览 ============ -->
+<section id="s0">
+  <div class="sec-h"><span class="sec-n">00</span><h2>一页看懂：整体基线 + 组别热力图</h2></div>
+  <p class="sec-d">
+    最上面两行是<b>全部选手</b>（不分组别）的男 / 女整体水平，作为后面所有比较的基准线；下面是各细分组别。
+    每个项目内部单独排名（1 = 最强），所以「分钟」和「公斤」两种量纲不会互相干扰：颜色越深绿 = 该行在这个项目上越强。
+  </p>
+
+  <div class="card">
+    <div class="card-h">
+      <div>
+        <div class="card-t">三项成绩 · 组别强度热力图</div>
+        <div class="card-s">深色 = 该项目内排名靠前（7K / SPEED 越短越好，硬拉越重越好）。格内数字为中位成绩；前两行「整体」为全部选手合并值</div>
+      </div>
+    </div>
+    <div id="c_heat" class="chart tall"></div>
+  </div>
+
+  <div class="grid4" style="margin-top:14px">
+    <div class="card" style="margin-top:0"><div class="card-t">7K 跑步</div><div class="card-s" style="margin-bottom:6px" id="h_7k">中位用时</div><div id="c_kpi7k" class="chart short"></div></div>
+    <div class="card" style="margin-top:0"><div class="card-t">5RM 硬拉</div><div class="card-s" style="margin-bottom:6px" id="h_str">中位重量</div><div id="c_kpistr" class="chart short"></div></div>
+    <div class="card" style="margin-top:0"><div class="card-t">SPEED（3×30 卡）</div><div class="card-s" style="margin-bottom:6px" id="h_spd">中位用时</div><div id="c_kpispd" class="chart short"></div></div>
+    <div class="card" style="margin-top:0"><div class="card-t">ENDURANCE</div><div class="card-s" style="margin-bottom:6px" id="h_end">总决赛限职业组 · 公开赛全员</div><div id="c_kpiend" class="chart short"></div></div>
+  </div>
+</section>
+
+<!-- ============ 01 整体基线 ============ -->
+<section id="s1">
+  <div class="sec-h"><span class="sec-n">01</span><h2>整体基线：四项的全员水平</h2></div>
+  <p class="sec-d">先锚定「正常水平在哪」。这里不分组别，把所有有成绩的选手按性别合并，给出中位数、四分位区间与样本量。后面所有差异都是相对这条基线来说的。</p>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">全员基线统计</div><div class="card-s">中位数最能代表「一个普通选手」的水平；P25–P75 是中间一半选手所在区间；「最快 / 最重」「最慢 / 最轻」为真实极值（官方录入成绩，个别极端值会拉宽区间，故同时给出 P10 / P90）</div></div></div>
+    <div class="tw" style="max-height:none"><table id="t_base"></table></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">基线分布对照（男 / 女）</div><div class="card-s">箱体 = P25–P75，横线 = 中位数，须 = P10–P90，散点 = 每位选手</div></div>
+      <div class="legend-inline"><span><i class="dot" style="background:var(--male)"></i>男子</span><span><i class="dot" style="background:var(--female)"></i>女子</span></div>
+    </div>
+    <div class="grid4">
+      <div><div id="c_base7k" style="height:330px"></div></div>
+      <div><div id="c_basestr" style="height:330px"></div></div>
+      <div><div id="c_basespd" style="height:330px"></div></div>
+      <div><div id="c_baseend" style="height:330px"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 性别差异 ============ -->
+<section id="s2">
+  <div class="sec-h"><span class="sec-n">02</span><h2>性别差异：同组别内男女差多少</h2></div>
+  <p class="sec-d">只比较<b>相同组别</b>的男女中位数，避免把「职业男 vs 传奇女」这种跨组别差距误读成性别差距。统一换算成「男性相对女性的优势百分比」，三个项目可直接横向比较。</p>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">男性优势（%，相对同组女性中位数）</div><div class="card-s">硬拉用重量差；7K / SPEED 用用时差（男子更快 = 正值）</div></div></div>
+    <div id="c_gap" class="chart short"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">全员层面的性别差距（不分组别）</div><div class="card-s">把所有选手按性别合并后的分布对比</div></div></div>
+    <div class="grid4">
+      <div><div id="c_sex7k" style="height:330px"></div></div>
+      <div><div id="c_sexstr" style="height:330px"></div></div>
+      <div><div id="c_sexspd" style="height:330px"></div></div>
+      <div><div id="c_sexend" style="height:330px"></div></div>
+    </div>
+  </div>
+  <div class="note" id="n_gender"></div>
+</section>
+
+<!-- ============ 03 年龄差异 ============ -->
+<section id="s3">
+  <div class="sec-h"><span class="sec-n">03</span><h2>年龄差异：35-39 到 40+ 掉多少</h2></div>
+  <p class="sec-d">赛事里唯一有明确年龄分层的是<b>传奇组</b>（35-39 岁 / 40+ 岁）。把「精英组 → 传奇 35-39 → 传奇 40+」串起来，还能大致看出一条随年龄的衰减曲线（注意：精英组并非纯年龄划分，方向上参考即可）。</p>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">40+ 相对 35-39 的成绩变化</div><div class="card-s">负值 = 40+ 更弱（用时变长 / 硬拉变轻）；正值 = 40+ 反而更强</div></div></div>
+    <div id="c_age_gap" class="chart short"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">年龄梯度：精英 → 传奇 35-39 → 传奇 40+</div><div class="card-s">中位数原值；点为中位，虚线为趋势方向</div></div></div>
+    <div class="grid4">
+      <div><div id="c_age7k" style="height:320px"></div></div>
+      <div><div id="c_agestr" style="height:320px"></div></div>
+      <div><div id="c_agespd" style="height:320px"></div></div>
+      <div><div id="c_ageend" style="height:320px"></div></div>
+    </div>
+    <div class="tw" style="max-height:none;margin-top:8px"><table id="t_age"></table></div>
+  </div>
+  <div class="note warn" id="n_age"></div>
+</section>
+
+<!-- ============ 04 组别差异 ============ -->
+<section id="s4">
+  <div class="sec-h"><span class="sec-n">04</span><h2>组别差异：各组别之间的真实差距</h2></div>
+  <p class="sec-d">箱线 + 散点看离散度（不只是中位数），脊线图看整体形状（是否双峰、尾部有多长）。团队组别已拆到成员个人，职业团队与混双团队按成员性别分成男 / 女两行；团队数据均来自<b>总决赛</b>（公开赛双人组别官方榜单暂无成绩）。<br><b>ENDURANCE 覆盖范围特殊</b>：总决赛里该项目原为全部组别设置，最终<b>只有职业组有成绩</b>（职业个人 38 人 + 职业团队成员 42 人 = 80 条），精英组 / 传奇组 / 精英混双团队因天气未跑；<b>公开赛个人组别则完整设有此项目</b>（男 56 + 女 35 = 91 条）。因此在「总决赛」范围内该项目只出现职业相关的行，切到「总决赛 + 公开赛」才会看到公开赛两个组别。</p>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">7K 跑步 · 用时分布（分钟）</div><div class="card-s">仅总决赛设 7K；公开赛无此项目</div></div>
+      <div class="legend-inline"><span><i class="dot" style="background:var(--male)"></i>男子</span><span><i class="dot" style="background:var(--female)"></i>女子</span></div>
+    </div>
+    <div id="c_7k" class="chart tall"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">5RM 硬拉 · 重量分布（kg）</div><div class="card-s">含总决赛个人 + 团队成员拆分 + 公开赛个人</div></div>
+      <div class="legend-inline"><span><i class="dot" style="background:var(--male)"></i>男子</span><span><i class="dot" style="background:var(--female)"></i>女子</span></div>
+    </div>
+    <div id="c_str" class="chart tall"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">硬拉：各组别前 10 名门槛 vs 中位数</div><div class="card-s">门槛 = 该组别第 10 名的重量，看「头部有多卷」</div></div></div>
+    <div id="c_str2" class="chart short"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">SPEED（3×30 卡） · 用时分布（分钟）</div><div class="card-s">含总决赛个人 + 团队成员拆分 + 公开赛个人</div></div>
+      <div class="legend-inline"><span><i class="dot" style="background:var(--male)"></i>男子</span><span><i class="dot" style="background:var(--female)"></i>女子</span></div>
+    </div>
+    <div id="c_spd" class="chart tall"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">ENDURANCE · 用时分布（分钟）</div><div class="card-s">总决赛 <b>仅职业组留下成绩</b>（职业个人 + 团队成员，80 条）；公开赛个人组别全员参加（91 条）——切到「总决赛 + 公开赛」可同图对比</div></div>
+      <div class="legend-inline"><span><i class="dot" style="background:var(--male)"></i>男子</span><span><i class="dot" style="background:var(--female)"></i>女子</span></div>
+    </div>
+    <div id="c_end" class="chart tall"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">团队成员 vs 个人参赛（同性别、同项目）</div><div class="card-s">总决赛 · 柱高 = 中位数。同性别同项目下，「以团队身份参赛的成员」与「以个人身份参赛者」的对比：绿柱 ≤ 灰柱 → 团队参赛者整体并不比个人赛选手更强</div></div></div>
+    <div id="c_teamvs" class="chart short"></div>
+  </div>
+
+  <div class="card" style="margin-top:22px;background:#fcfdfe">
+    <div class="card-h"><div><div class="card-t" style="font-size:15.5px">成绩分布：组别密度脊线图</div>
+      <div class="card-s">每条曲线 = 一个组别的核密度分布（KDE，高斯核 + Silverman 带宽），高度只表示形状、不代表人数；虚线 = 中位数。<b>顶部深色的「整体」是该性别全部选手的分布</b>，可把任一组别叠在上面看它偏快还是偏慢。颜色由强到弱渐变。</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">7K 跑步 · 成绩分布</div><div class="card-s">横轴 = 用时（越靠左越快）</div></div>
+      <div class="tabs" data-tabs="r7k"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridge7k"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridge7k"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">5RM 硬拉 · 成绩分布</div><div class="card-s">横轴 = 重量（越靠右越强）</div></div>
+      <div class="tabs" data-tabs="rstr"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgestr"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgestr"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">SPEED（3×30 卡） · 成绩分布</div><div class="card-s">横轴 = 用时（越靠左越快）</div></div>
+      <div class="tabs" data-tabs="rspd"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgespd"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgespd"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">ENDURANCE · 成绩分布</div><div class="card-s">横轴 = 用时（越靠左越快）；总决赛仅职业组有成绩，公开赛个人组别全员有成绩</div></div>
+      <div class="tabs" data-tabs="rend"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgeend"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgeend"></table></div>
+  </div>
+</section>
+
+<!-- ============ 05 中外对比 ============ -->
+<section id="s5">
+  <div class="sec-h"><span class="sec-n">05</span><h2>中外对比：中国选手 vs 海外选手</h2></div>
+  <p class="sec-d">接口不提供国籍，这里按<b>姓名的罗马字来源</b>推断（拼音 / 韩式 / 西里尔语系 / 日文 / 方言罗马字），港澳与东南亚华人计入中国。有 25 个昵称类姓名属低置信判定，可在文末清单复核。</p>
+
+  <div class="grid2">
+    <div class="card" style="margin-top:0">
+      <div class="card-h"><div><div class="card-t">海外相对中国的差距</div><div class="card-s">正值 = 海外更强（用时更短 / 硬拉更重）</div></div></div>
+      <div id="c_nat_gap" class="chart short"></div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <div class="card-h"><div><div class="card-t">样本构成</div><div class="card-s">中国 / 海外人数与地区细分</div></div></div>
+      <div id="c_nat_pie" class="chart short"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">分地区中位数（男 / 女）</div><div class="card-s">样本量 n&lt;5 的地区不单独出柱，避免误读</div></div></div>
+    <div class="grid4">
+      <div><div id="c_nat7k" style="height:330px"></div></div>
+      <div><div id="c_natstr" style="height:330px"></div></div>
+      <div><div id="c_natspd" style="height:330px"></div></div>
+      <div><div id="c_natend" style="height:330px"></div></div>
+    </div>
+    <div class="tw" style="max-height:none;margin-top:8px"><table id="t_nat"></table></div>
+  </div>
+  <div class="note warn" id="n_nat"></div>
+</section>
+
+<!-- ============ 06 项目间关联 ============ -->
+<section id="s6">
+  <div class="sec-h"><span class="sec-n">06</span><h2>项目间关联：一项强，是否样样强</h2></div>
+  <p class="sec-d">用皮尔逊相关系数看四个项目的耦合度。硬拉是力量、7K 是有氧耐力、SPEED 是无氧爆发、ENDURANCE 是综合耐力，理论上关联不应太强——关联弱说明「全能型」稀少。</p>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">相关系数矩阵</div><div class="card-s">已做方向统一：硬拉取负值参与计算，因此正数表示「越强越快」</div></div></div>
+    <div class="grid2">
+      <div><div id="c_corr_m" style="height:330px"></div></div>
+      <div><div id="c_corr_f" style="height:330px"></div></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h"><div><div class="card-t">7K 用时 vs SPEED 用时</div><div class="card-s">越靠左下越强</div></div></div>
+      <div id="c_scatter" class="chart short"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div><div class="card-t">5RM 硬拉 vs SPEED 用时</div><div class="card-s">右下 = 力量强且速度快</div></div></div>
+      <div id="c_scatter2" class="chart short"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h"><div><div class="card-t">7K 用时 vs ENDURANCE 用时</div><div class="card-s">越靠左下越强；仅「同时有这两项」的选手入图（总决赛职业组 + 公开赛有 7K 者）</div></div></div>
+      <div id="c_scatter3" class="chart short"></div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div><div class="card-t">5RM 硬拉 vs ENDURANCE 用时</div><div class="card-s">右下 = 力量强且耐力好</div></div></div>
+      <div id="c_scatter4" class="chart short"></div>
+    </div>
+  </div>
+  <div class="note" id="n_corr"></div>
+</section>
+
+<!-- ============ 07 其余项目 ============ -->
+<section id="s7">
+  <div class="sec-h"><span class="sec-n">07</span><h2>其余项目分布：ODYSSEY / ALLTRA TRILOGY / 职业组专项</h2></div>
+  <p class="sec-d">前面四项之外，官方榜单还公布了这些项目的<b>个人成绩</b>。按同一套脊线图呈现：横轴为成绩，越靠左（时间类）或越靠右（重量 / 次数类）越强，虚线为该系列中位数。</p>
+  <div class="note">
+    <b>口径说明</b>：这些项目<b>不是全员参加</b>，各有覆盖范围——ODYSSEY 与 ALLTRA TRILOGY 只面向<b>精英组 / 传奇组个人</b>；1RM SNATCH、X.O、EVA ONE、OPTIMUS PRIME 只面向<b>职业组</b>（含职业团队成员）。
+    因此每张图只有对应组别有系列，样本量普遍小于前面四项；<b>n&lt;20 的项目（X.O / EVA ONE）分布仅供参考</b>。
+    ODYSSEY 及 ALLTRA Ⅰ 有明确时间上限，撞到上限的人官方只记「CAP + 完成次数」、没有成绩数值，
+    <b>因此下方所有分布图只画完赛者</b>——未完成的部分请看紧挨着的「关门时间」图与表。
+  </div>
+
+  <div class="card" style="background:#fcfdfe">
+    <div class="card-h">
+      <div><div class="card-t">关门时间视角：完成 / 封顶 / 退赛的结果构成</div>
+        <div class="card-s">这是「能力」的另一半。<b>封顶</b> = 打满时间上限仍未完成规定量（官方按剩余完成次数排名）；<b>退赛</b> = DNF / 无有效成绩。仅总决赛有这些项目</div></div>
+      <div class="legend-inline">
+        <span><i class="dot" style="background:#0f9d76"></i>完成</span>
+        <span><i class="dot" style="background:#e0a32e"></i>封顶</span>
+        <span><i class="dot" style="background:#c0392b"></i>退赛</span>
+      </div>
+    </div>
+    <div id="c_cap" style="height:340px"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_cap"></table></div>
+  </div>
+
+  <h3 style="margin:22px 0 10px;font-size:15.5px;color:#14181f">精英组 / 传奇组项目</h3>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">ODYSSEY · 用时分布</div><div class="card-s">精英组 / 传奇组个人项目，<b>169 人完赛</b>；另有 <b>143 人封顶</b>（15:00 上限，中位只做到 91 次，见上方构成图）</div></div>
+      <div class="tabs" data-tabs="rod"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgeod"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgeod"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">ALLTRA TRILOGY Ⅰ · 用时分布</div><div class="card-s">三部曲第一段，<b>171 人完赛</b>；另有 <b>98 人封顶</b>（5:00 上限，中位 74 次）</div></div>
+      <div class="tabs" data-tabs="ra1"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgea1"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgea1"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">ALLTRA TRILOGY Ⅱ · 次数分布</div><div class="card-s">269 人全部有成绩（单位为<b>完成次数</b>）；<b>次数本身就是完成量</b>，没做完的人天然落在左侧，无需单独剔除</div></div>
+      <div class="tabs" data-tabs="ra2"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgea2"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgea2"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">ALLTRA TRILOGY Ⅲ · 次数分布</div><div class="card-s"><b>237 人完赛</b>（单位为完成次数），另有 <b>32 人 DNF</b> 未计入；越靠右越强</div></div>
+      <div class="tabs" data-tabs="ra3"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgea3"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgea3"></table></div>
+  </div>
+
+  <h3 style="margin:26px 0 10px;font-size:15.5px;color:#14181f">职业组专项</h3>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">1RM SNATCH · 重量分布</div><div class="card-s">抓举 1RM，<b>87 条有效</b>（职业组个人 39 + 团队成员 48），另有 <b>4 人 0 kg / 未举</b>未计入</div></div>
+      <div class="tabs" data-tabs="rsn"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgesn"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgesn"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">OPTIMUS PRIME · 用时分布</div><div class="card-s">仅职业组，<b>29 人完赛</b>；另有 9 人封顶、1 人 DNF</div></div>
+      <div class="tabs" data-tabs="rop"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgeop"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgeop"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">X.O · 用时分布</div><div class="card-s">仅职业组，<b>24 人完赛</b>、<b>15 人封顶</b>（封顶率 38%，样本小，仅供参考）</div></div>
+      <div class="tabs" data-tabs="rxo"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgexo"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgexo"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <div><div class="card-t">EVA ONE · 用时分布</div><div class="card-s">仅职业组，<b>17 人完赛</b>、<b>22 人封顶</b>（封顶率 56%，女仅 4 人完赛，仅供参考）</div></div>
+      <div class="tabs" data-tabs="rev"><button class="on" data-g="男子">男子</button><button data-g="女子">女子</button></div>
+    </div>
+    <div id="c_ridgeev"></div>
+    <div class="tw" style="margin-top:12px"><table id="t_ridgeev"></table></div>
+  </div>
+
+  <h3 style="margin:26px 0 10px;font-size:15.5px;color:#14181f">只公布队伍总成绩的项目</h3>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">团队项目成绩汇总</div>
+      <div class="card-s">下列项目官方只公布<b>队伍合计成绩</b>（无成员拆分），样本普遍偏小，故只做汇总不做分布图</div></div></div>
+    <div class="tw"><table id="t_teamitems"></table></div>
+  </div>
+</section>
+
+<!-- ============ 08 混双协同 ============ -->
+<section id="s8">
+  <div class="sec-h"><span class="sec-n">08</span><h2>混双协同：1+1&gt;2 到底有多少空间</h2></div>
+  <p class="sec-d">
+    把每支<b>精英混双</b>队拆成两半看。<b>预期</b> = 两名成员各自在「同性别、同项目」里的百分位均值（7K / 硬拉 / SPEED，共 6 个值）；<b>实际</b> = 队伍合计成绩（7K 合计 / 硬拉合计 / SPEED 合计）在全部混双队伍中的百分位均值。
+    <b>协同度 = 实际 − 预期</b>：&gt;0 即 1+1&gt;2，&lt;0 即 1+1&lt;2。只取这三项，因为 ODYSSEY / ALLTRA 三部曲只有队伍合计、无法算成员贡献。
+  </p>
+
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">预期 vs 实际：每个点 = 一支混双队</div>
+      <div class="card-s">横轴 = 两名成员的个人百分位均值，纵轴 = 团队实际百分位；<b>点落在虚线之上 = 1+1&gt;2</b>。点越大 = 偏离越远</div></div>
+      <div class="legend-inline"><span><i class="dot" style="background:#0f9d76"></i>超预期</span><span><i class="dot" style="background:#c0392b"></i>低于预期</span></div>
+    </div>
+    <div id="c_syn_scatter" style="height:430px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">协同度排行：前 10 / 后 10</div>
+      <div class="card-s">单位：百分位点。绿 = 打出了超出个人水平的团队成绩，红 = 明显打折</div></div></div>
+    <div id="c_syn_rank" style="height:520px"></div>
+  </div>
+
+  <div class="note" id="n_syn"></div>
+
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">全部混双队伍明细</div>
+      <div class="card-s">按协同度降序。<b>平衡度</b> = 1 − 男女同项目百分位差的均值（1 = 两人水平几乎一致，0 = 严重偏科）</div></div></div>
+    <div class="tw" style="max-height:440px"><table id="t_syn"></table></div>
+  </div>
+</section>
+
+<!-- ============ 09 明细表 ============ -->
+<section id="s9">
+  <div class="sec-h"><span class="sec-n">09</span><h2>明细数据</h2></div>
+  <p class="sec-d">可筛选、可搜索。团队成员记录标注所属团队，并带姓名来源判定（可用来复核中外分组）。完整数据见同目录 CSV。</p>
+  <div class="card">
+    <div class="toolbar">
+      <select id="f_match"><option value="">全部赛事</option></select>
+      <select id="f_div"><option value="">全部组别</option></select>
+      <select id="f_src"><option value="">全部来源</option><option value="个人">个人参赛</option><option value="团队拆分">团队成员</option></select>
+      <select id="f_nat"><option value="">全部来源地</option><option value="中国">中国</option><option value="海外">海外</option></select>
+      <input type="search" id="f_q" placeholder="搜索姓名 / 团队">
+      <span class="count" id="f_count"></span>
+    </div>
+    <div class="tw">
+      <table id="t_all">
+        <thead><tr>
+          <th>赛事</th><th>组别</th><th>姓名</th><th>所属团队</th><th>性别</th><th>来源地</th>
+          <th class="num">7K 跑步</th><th class="num">5RM 硬拉</th><th class="num">SPEED</th><th class="num">ENDURANCE</th><th>来源</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div><div class="card-t">来源判定待复核清单</div><div class="card-s">昵称或中韩 / 中西重叠的姓名，判定置信度较低；如发现错误告诉我即可一键修正</div></div></div>
+    <div class="tw" style="max-height:320px"><table id="t_unsure"></table></div>
+  </div>
+</section>
+
+<footer>
+  数据抓取时间 <span id="ts"></span> ｜ 排行榜接口 <code>fullapi.project1.team</code> ｜ 团队成绩与成员成绩的关系已逐队校验为「加总」。<br>
+  口径：成绩为 0、<code>DNF</code> / <code>DNS</code> 的记录已从全部分析中剔除；<code>CAP+nn</code>（超时未完成）不计入时间统计。
+  中外分组依据姓名的罗马字来源推断，仅供趋势参考。<br>
+  ENDURANCE 在总决赛仅职业组（个人 + 团队）留下成绩（80 条），公开赛个人组别则全部设置（91 条），相关图表只显示有数据的行。
+</footer>
+</div>
+
+<script>
+(function(){
+  const D = window.AFC_DATA;
+  const SCOPES = {
+    final:{label:'总决赛', f:p=>p.m===113},
+    all:{label:'总决赛 + 公开赛', f:()=>true},
+    open:{label:'仅公开赛', f:p=>p.m===149}
+  };
+  let SCOPE = localStorage.getItem('afc_scope')||'final';
+  if(!SCOPES[SCOPE]) SCOPE='final';
+  document.querySelectorAll('.scopebar .sb').forEach(b=>{
+    b.classList.toggle('on', b.dataset.scope===SCOPE);
+    b.addEventListener('click',()=>{localStorage.setItem('afc_scope',b.dataset.scope);location.reload();});
+  });
+  const P = D.persons.filter(SCOPES[SCOPE].f);
+
+  // ---------- 元数据 ----------
+  const MATCH = {113:'总决赛', 149:'公开赛'};
+  const DIV_ORDER = ['职业组 男子','职业组 女子','精英男子','精英女子','传奇男子 35-39','传奇男子 40+','传奇女子 35-39','传奇女子 40+','职业组 团队','精英混双团队','个人男子组别','个人女子组别'];
+  const DIV_SHORT = {
+    '职业组 男子':'职业·男','职业组 女子':'职业·女','精英男子':'精英·男','精英女子':'精英·女',
+    '传奇男子 35-39':'传奇35-39·男','传奇男子 40+':'传奇40+·男','传奇女子 35-39':'传奇35-39·女','传奇女子 40+':'传奇40+·女',
+    '职业组 团队':'职业团队','精英混双团队':'混双团队','个人男子组别':'公开赛·男','个人女子组别':'公开赛·女'
+  };
+  const DIV_BASE = {
+    '职业组 男子':'职业组','职业组 女子':'职业组','精英男子':'精英组','精英女子':'精英组',
+    '传奇男子 35-39':'传奇 35-39','传奇男子 40+':'传奇 40+','传奇女子 35-39':'传奇 35-39','传奇女子 40+':'传奇 40+',
+    '职业组 团队':'职业团队','精英混双团队':'精英混双','个人男子组别':'公开赛','个人女子组别':'公开赛'
+  };
+  const REG_ORDER = ['中国','韩国','俄罗斯/中亚/中东','欧美/其他海外','日本','蒙古','港澳/东南亚华人'];
+  const C_M = '#1c6fd6', C_F = '#d6336c', C_OV = '#14181f';
+  const fmtT = s => s==null ? '—' : (s>=3600
+      ? Math.floor(s/3600)+':'+String(Math.floor(s%3600/60)).padStart(2,'0')+':'+String(Math.round(s%60)).padStart(2,'0')
+      : Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0'));
+  const fmtKg = v => v==null ? '—' : (Math.round(v*10)/10)+' kg';
+
+  function stat(arr){
+    if(!arr.length) return null;
+    const s=[...arr].sort((a,b)=>a-b);
+    const q=p=>{const i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo);};
+    return {n:s.length,min:s[0],p10:q(.1),p25:q(.25),med:q(.5),p75:q(.75),p90:q(.9),max:s[s.length-1],mean:s.reduce((a,b)=>a+b,0)/s.length};
+  }
+  function pearson(a,b){
+    const n=a.length; if(n<3) return null;
+    const ma=a.reduce((x,y)=>x+y,0)/n, mb=b.reduce((x,y)=>x+y,0)/n;
+    let sa=0,sb=0,sab=0;
+    for(let i=0;i<n;i++){const da=a[i]-ma,db=b[i]-mb;sa+=da*da;sb+=db*db;sab+=da*db;}
+    if(sa===0||sb===0) return null;
+    return sab/Math.sqrt(sa*sb);
+  }
+
+  const divs = DIV_ORDER.filter(d=>P.some(p=>p.dv===d));
+  const TEAM_DV = ['职业组 团队','精英混双团队'];
+  const GROUPS = [];
+  divs.forEach(d=>{
+    if(TEAM_DV.includes(d)){
+      ['男子','女子'].forEach(g=>GROUPS.push({dv:d, g, team:true, bl:DIV_BASE[d], label:(DIV_SHORT[d])+'·'+(g==='男子'?'男':'女')}));
+    }else{
+      GROUPS.push({dv:d, g:(P.find(p=>p.dv===d)||{}).g||null, team:false, bl:DIV_BASE[d], label:DIV_SHORT[d]});
+    }
+  });
+  const gVals = (grp,key)=>P.filter(p=>p.dv===grp.dv&&(grp.g==null||p.g===grp.g))
+      .map(p=>p[key]).filter(v=>v!=null);
+  const fVals = (flt,key)=>P.filter(flt).map(p=>p[key]).filter(v=>v!=null);
+  const items3 = [{key:'r',name:'7K 跑步'},{key:'s',name:'5RM 硬拉'},{key:'sp',name:'SPEED'},{key:'e',name:'ENDURANCE'}];
+  const ITEM = {r:'7K 跑步', s:'5RM 硬拉', sp:'SPEED', e:'ENDURANCE'};
+  const isTime = k => k!=='s';
+  const fmtV = (k,v)=> k==='s'?fmtKg(v):fmtT(v);
+
+  // ---------- KPI ----------
+  const valid = P.filter(p=>p.r!=null||p.s!=null||p.sp!=null||p.e!=null);
+  const entries = valid.reduce((a,p)=>a+(p.r!=null?1:0)+(p.s!=null?1:0)+(p.sp!=null?1:0)+(p.e!=null?1:0),0);
+  const nCN = valid.filter(p=>p.rg==='中国').length, nOS = valid.filter(p=>p.rg==='海外').length;
+  document.getElementById('k1').textContent = valid.length;
+  document.getElementById('k2').textContent = entries;
+  document.getElementById('k3').textContent = nCN+' / '+nOS;
+  document.getElementById('k4').textContent = divs.length;
+  document.getElementById('k4m').textContent = SCOPES[SCOPE].label + ' · ' + divs.length + ' 个组别';
+  document.getElementById('sb_note').textContent =
+    '当前：' + SCOPES[SCOPE].label + ' ｜ ' + valid.length + ' 人有成绩、' + entries + ' 条成绩'
+    + (SCOPE==='all' ? '（其中公开赛 ' + valid.filter(p=>p.m===149).length + ' 人，仅硬拉 / SPEED，无 7K）' : '');
+  document.getElementById('ts').textContent = new Date(D.generatedAt).toLocaleString('zh-CN',{hour12:false});
+
+  const charts=[];
+  const tt = {backgroundColor:'#fff',borderColor:'#e6e9ef',borderWidth:1,textStyle:{color:'#14181f',fontSize:12}};
+  const axisLine = {lineStyle:{color:'#dde2ea'}};
+  const splitLine = {lineStyle:{color:'#eef1f5'}};
+
+  // ================= 00 热力图（含整体男/女） =================
+  (function(){
+    const c = echarts.init(document.getElementById('c_heat'));
+    const rows = [
+      {label:'整体 · 男', g:'男子', overall:true, r:stat(fVals(p=>p.g==='男子','r')), s:stat(fVals(p=>p.g==='男子','s')), sp:stat(fVals(p=>p.g==='男子','sp')), e:stat(fVals(p=>p.g==='男子','e'))},
+      {label:'整体 · 女', g:'女子', overall:true, r:stat(fVals(p=>p.g==='女子','r')), s:stat(fVals(p=>p.g==='女子','s')), sp:stat(fVals(p=>p.g==='女子','sp')), e:stat(fVals(p=>p.g==='女子','e'))}
+    ].concat(GROUPS.map(gr=>({label:gr.label, g:gr.g, overall:false,
+      r:stat(gVals(gr,'r')), s:stat(gVals(gr,'s')), sp:stat(gVals(gr,'sp')), e:stat(gVals(gr,'e'))})));
+    const ranks={};
+    items3.forEach(it=>{
+      const avail = rows.filter(r=>r[it.key]);
+      const sorted = [...avail].sort((a,b)=> isTime(it.key) ? a[it.key].med-b[it.key].med : b[it.key].med-a[it.key].med);
+      sorted.forEach((r,i)=> ranks[r.label+'|'+it.key]=i+1);
+      ranks['_n_'+it.key]=sorted.length;
+    });
+    const data=[];
+    rows.forEach((r,yi)=>{
+      items3.forEach((it,xi)=>{
+        if(!r[it.key]) return;
+        const rk=ranks[r.label+'|'+it.key], n=ranks['_n_'+it.key];
+        data.push({value:[xi,yi,rk], rk, n, st:r[it.key], it, row:r,
+          label:{color: rk<=Math.ceil(n*0.34)?'#ffffff':'#14181f',
+                 fontStyle: r.overall?'normal':'normal'}});
+      });
+    });
+    c.setOption({
+      animationDuration:600,
+      tooltip:Object.assign({},tt,{formatter:p=>{
+        const d=p.data; if(!d) return '';
+        return `<b>${d.row.label}</b>${d.row.overall?'（全部选手）':''}<br/>${d.it.name}：中位 <b>${fmtV(d.it.key,d.st.med)}</b>（n=${d.st.n}）`+
+          `<br/>排名 ${d.rk} / ${d.n}<br/>P25–P75 ${d.it.key==='s'?(Math.round(d.st.p25)+' – '+Math.round(d.st.p75)+' kg'):(fmtT(d.st.p25)+' – '+fmtT(d.st.p75))}`;
+      }}),
+      grid:{left:16,right:24,top:40,bottom:16,containLabel:true},
+      xAxis:{type:'category',data:items3.map(i=>i.name),axisLine:{show:false},axisTick:{show:false},
+        axisLabel:{fontSize:12.5,color:'#3f4756',fontWeight:600},position:'top'},
+      yAxis:{type:'category',data:rows.map(r=>r.label),inverse:true,axisLine:{show:false},axisTick:{show:false},
+        axisLabel:{fontSize:11.5,color:'#4a5261',
+          formatter:(v,idx)=>{const r=rows.find(x=>x.label===v);return r&&r.overall?'{a|'+v+'}':v;},
+          rich:{a:{fontWeight:700,color:'#14181f',fontSize:12}}}},
+      visualMap:{min:1,max:Math.max(...items3.map(i=>ranks['_n_'+i.key]||1)),show:false,
+        inRange:{color:['#0f8a6c','#3aa384','#7fc3ac','#b9dbcf','#e2e9f0','#f2f4f8']},dimension:2,seriesIndex:0},
+      series:[{type:'heatmap',data,
+        itemStyle:{borderColor:'#ffffff',borderWidth:5,borderRadius:6},
+        label:{show:true,fontSize:11.5,fontWeight:600,
+          formatter:p=> p.data.it.key==='s'?Math.round(p.data.st.med)+' kg':fmtT(p.data.st.med)},
+        emphasis:{itemStyle:{borderColor:'#14181f',borderWidth:2}}}]
+    });
+    charts.push(c);
+  })();
+
+  // ================= 00 KPI 小图（组别中位条形） =================
+  function noData(el,msg){
+    const b=document.getElementById(el); if(!b) return null;
+    b.style.height='86px';
+    b.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#8a93a3;font-size:12px;text-align:center;padding:0 10px">'+msg+'</div>';
+    return null;
+  }
+  function miniBarG(el,key,headId){
+    const elBox=document.getElementById(el);
+    const rows = GROUPS.map(gr=>({d:gr.label, g:gr.g, st:stat(gVals(gr,key))})).filter(x=>x.st)
+      .sort((a,b)=> isTime(key)? a.st.med-b.st.med : b.st.med-a.st.med);
+    if(!rows.length){
+      elBox.style.height='46px';
+      elBox.innerHTML='<div style="padding:12px 2px;color:#8a93a3;font-size:12px">当前统计范围内没有该项目的成绩</div>';
+      return null;
+    }
+    const c = echarts.init(elBox);
+    elBox.style.height=(rows.length*23+18)+'px';
+    c.resize();
+    const lo=Math.min(...rows.map(r=>r.st.med)), hi=Math.max(...rows.map(r=>r.st.med));
+    if(headId) document.getElementById(headId).textContent =
+      '中位'+(key==='s'?'重量':'用时')+'：'+fmtV(key,rows[0].st.med)+' → '+fmtV(key,rows[rows.length-1].st.med);
+    c.setOption({
+      animationDuration:500,
+      grid:{left:8,right:58,top:8,bottom:8,containLabel:true},
+      tooltip:Object.assign({},tt,{trigger:'item',formatter:p=>{const r=rows[p.dataIndex];
+        return `<b>${r.d}</b>（n=${r.st.n}）<br/>中位 ${fmtV(key,r.st.med)}<br/>P25–P75 ${key==='s'?(Math.round(r.st.p25)+' – '+Math.round(r.st.p75)+' kg'):(fmtT(r.st.p25)+' – '+fmtT(r.st.p75))}`;}}),
+      xAxis:{type:'value',max:hi*1.18,show:false},
+      yAxis:{type:'category',data:rows.map(r=>r.d),inverse:true,axisLine:{show:false},axisTick:{show:false},
+        axisLabel:{fontSize:10.5,color:'#5a6474'}},
+      series:[{type:'bar',barWidth:'62%',
+        data:rows.map(r=>({value:r.st.med,itemStyle:{color:r.g==='女子'?C_F:C_M,borderRadius:[0,4,4,0]}})),
+        label:{show:true,position:'right',fontSize:10,color:'#6b7484',
+          formatter:p=>key==='s'?Math.round(p.value)+'':fmtT(p.value)}}]
+    });
+    return c;
+  }
+  charts.push(miniBarG('c_kpi7k','r','h_7k'));
+  charts.push(miniBarG('c_kpistr','s','h_str'));
+  charts.push(miniBarG('c_kpispd','sp','h_spd'));
+  charts.push(miniBarG('c_kpiend','e','h_end'));
+
+  // ================= 01 整体基线 =================
+  (function(){
+    const tb=document.getElementById('t_base');
+    const head='<thead><tr><th style="text-align:left">项目</th><th style="text-align:left">性别</th><th class="num">n</th>'+
+      '<th class="num">最快 / 最重</th><th class="num">P10</th><th class="num">P25</th><th class="num">中位</th><th class="num">P75</th>'+
+      '<th class="num">P90</th><th class="num">最慢 / 最轻</th></tr></thead>';
+    const body=[];
+    items3.forEach(it=>{
+      ['男子','女子'].forEach(g=>{
+        const st=stat(fVals(p=>p.g===g,it.key));
+        if(!st) return;
+        const f=v=>fmtV(it.key,v);
+        body.push(`<tr class="${g==='女子'?'g-f':'g-m'}"><td>${it.name}</td><td class="${g==='女子'?'g-f':'g-m'}">${g}</td>`+
+          `<td class="num">${st.n}</td><td class="num"><b>${f(it.key==='s'?st.max:st.min)}</b></td><td class="num">${f(st.p10)}</td><td class="num">${f(st.p25)}</td>`+
+          `<td class="num"><b>${f(st.med)}</b></td><td class="num">${f(st.p75)}</td><td class="num">${f(st.p90)}</td><td class="num">${f(it.key==='s'?st.min:st.max)}</td></tr>`);
+      });
+    });
+    tb.innerHTML=head+'<tbody>'+body.join('')+'</tbody>';
+  })();
+
+  // 基线 / 性别分布：单项目两箱对比
+  function twoBox(el,key,filterFn){
+    const c=echarts.init(document.getElementById(el));
+    const cats=['男子','女子'];
+    const groups=cats.map(g=>{
+      const vals=(filterFn?P.filter(p=>filterFn(p)&&p.g===g):P.filter(p=>p.g===g))
+        .map(p=>p[key]).filter(v=>v!=null);
+      return {g, vals, st:stat(vals)};
+    }).filter(x=>x.st);
+    if(!groups.length){ c.dispose&&c.dispose(); return noData(el,'当前统计范围内没有该项目的成绩'); }
+    const scale = isTime(key)?1/60:1;
+    const data=groups.map(x=>({value:[x.st.p10,x.st.p25,x.st.med,x.st.p75,x.st.p90].map(v=>+(v*scale).toFixed(2)),
+      itemStyle:{color:x.g==='女子'?'rgba(214,51,108,.10)':'rgba(28,111,214,.10)',
+                 borderColor:x.g==='女子'?C_F:C_M, borderWidth:1.8}}));
+    const pts=[]; groups.forEach((x,i)=>x.vals.forEach(v=>pts.push([i+(Math.random()-0.5)*0.34, +(v*scale).toFixed(2), x.g])));
+    c.setOption({
+      animationDuration:600,
+      title:{text:ITEM[key],left:'center',top:2,textStyle:{fontSize:13,fontWeight:650,color:'#3f4756'}},
+      tooltip:Object.assign({},tt,{trigger:'item',formatter:p=>{
+        if(p.seriesType==='scatter'){const g=groups[Math.round(p.value[0])];
+          return `${g.g} · ${ITEM[key]}<br/><b>${fmtV(key,p.value[1]*(isTime(key)?60:1))}</b>`;}
+        const g=groups[p.dataIndex];
+        return `<b>${g.g}</b>（n=${g.st.n}）<br/>中位 <b>${fmtV(key,g.st.med)}</b><br/>P25–P75 ${fmtV(key,g.st.p25)} – ${fmtV(key,g.st.p75)}<br/>P10–P90 ${fmtV(key,g.st.p10)} – ${fmtV(key,g.st.p90)}`;
+      }}),
+      grid:{left:14,right:14,top:34,bottom:26,containLabel:true},
+      xAxis:{type:'category',data:groups.map(x=>x.g),axisLine,axisTick:{show:false},
+        axisLabel:{fontSize:12,color:'#3f4756',fontWeight:600}},
+      yAxis:{type:'value',scale:true,name:isTime(key)?'分钟':'kg',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+        splitLine,axisLabel:{fontSize:11,color:'#8a93a3'}},
+      series:[
+        {type:'scatter',data:pts,symbolSize:4.2,itemStyle:{opacity:.28,color:p=>p.value[2]==='女子'?C_F:C_M},z:1},
+        {type:'boxplot',data,boxWidth:['26%','52%'],z:3}
+      ]
+    });
+    return c;
+  }
+  items3.forEach(it=>{
+    charts.push(twoBox('c_base'+({r:'7k',s:'str',sp:'spd',e:'end'}[it.key]), it.key, null));
+  });
+  items3.forEach(it=>{
+    charts.push(twoBox('c_sex'+({r:'7k',s:'str',sp:'spd',e:'end'}[it.key]), it.key, null));
+  });
+
+  // 性别差异文案
+  (function(){
+    const parts=[];
+    ['职业组 男子|职业组 女子','传奇男子 35-39|传奇女子 35-39','传奇男子 40+|传奇女子 40+','个人男子组别|个人女子组别'].forEach(pair=>{
+      const [m,f]=pair.split('|');
+      const gv=(dv,key,gender)=>P.filter(p=>p.dv===dv&&(!gender||p.g===gender)).map(p=>p[key]).filter(v=>v!=null);
+      const diffs=items3.map(it=>{
+        const a=stat(gv(m,it.key)), b=stat(gv(f,it.key));
+        if(!a||!b) return null;
+        return {it, d: it.key==='s' ? (a.med-b.med)/b.med*100 : (b.med-a.med)/b.med*100};
+      }).filter(Boolean);
+      if(!diffs.length) return;
+      parts.push(`<b>${DIV_SHORT[m].replace(/·[男女]$/,'')}</b>：`+
+        diffs.map(x=>`${x.it.name} <b>${x.d>0?'+':''}${x.d.toFixed(0)}%</b>`).join(' · '));
+    });
+    document.getElementById('n_gender').innerHTML =
+      '<b>读法</b>：+40% 表示男性中位数比同组女性强 40%（硬拉更重 40%，或用时少 40%）。<br>'+parts.join('<br>');
+  })();
+
+  // ================= 02 性别差距图 =================
+  (function(){
+    const c = echarts.init(document.getElementById('c_gap'));
+    const defs = [
+      {label:'职业组', m:'职业组 男子', f:'职业组 女子', mi:113},
+      {label:'传奇 35-39', m:'传奇男子 35-39', f:'传奇女子 35-39', mi:113},
+      {label:'传奇 40+', m:'传奇男子 40+', f:'传奇女子 40+', mi:113},
+      {label:'公开赛', m:'个人男子组别', f:'个人女子组别', mi:149},
+      {label:'职业团队', m:'职业组 团队', f:'职业组 团队', mi:113, mg:'男子', fg:'女子'},
+      {label:'混双团队', m:'精英混双团队', f:'精英混双团队', mi:113, mg:'男子', fg:'女子'},
+    ];
+    const get=(dv,key,mi,gender)=>P.filter(p=>p.dv===dv&&p.m===mi&&(!gender||p.g===gender))
+      .map(p=>p[key]).filter(v=>v!=null);
+    const rows=[];
+    defs.forEach(d=>items3.forEach(it=>{
+      const M=stat(get(d.m,it.key,d.mi,d.mg)), F=stat(get(d.f,it.key,d.mi,d.fg));
+      if(!M||!F) return;
+      const diff = it.key==='s' ? (M.med-F.med)/F.med*100 : (F.med-M.med)/F.med*100;
+      rows.push({cat:d.label, item:it.name, key:it.key, diff:Math.round(diff*10)/10, M:M.med, F:F.med});
+    }));
+    const cats=[...new Set(rows.map(r=>r.cat))];
+    const names=items3.map(i=>i.name);
+    const colors={'7K 跑步':'#0f9d76','5RM 硬拉':'#c0392b','SPEED':'#1c6fd6'};
+    c.setOption({
+      animationDuration:600,
+      legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+      tooltip:Object.assign({},tt,{trigger:'axis',axisPointer:{type:'shadow'},formatter:ps=>{
+        const cat=ps[0].name;
+        const ls=ps.map(p=>{const r=rows.find(x=>x.cat===cat&&x.item===p.seriesName); if(!r) return null;
+          return `${p.seriesName}：男 ${fmtV(r.key,r.M)} / 女 ${fmtV(r.key,r.F)} → <b>${r.diff>0?'+':''}${r.diff}%</b>`;}).filter(Boolean);
+        return `<b>${cat}</b><br/>`+ls.join('<br/>');
+      }}),
+      grid:{left:16,right:16,top:38,bottom:8,containLabel:true},
+      xAxis:{type:'category',data:cats,axisLine,axisTick:{show:false},axisLabel:{fontSize:11.5,color:'#5a6474'}},
+      yAxis:{type:'value',name:'男性优势（%）',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+        splitLine,axisLabel:{fontSize:11,color:'#8a93a3',formatter:'{value}%'}},
+      series:names.map(nm=>({name:nm,type:'bar',barMaxWidth:24,
+        itemStyle:{color:colors[nm],borderRadius:[4,4,0,0]},
+        data:cats.map(cat=>{const r=rows.find(x=>x.cat===cat&&x.item===nm);return r?r.diff:null;}),
+        label:{show:true,position:'top',fontSize:9.5,color:'#6b7484',formatter:p=>p.value==null?'':((p.value>0?'+':'')+p.value+'%')}}))
+    });
+    charts.push(c);
+  })();
+
+  // ================= 03 年龄差异 =================
+  (function(){
+    const gv=(dv,key,gender)=>P.filter(p=>p.dv===dv&&p.g===gender).map(p=>p[key]).filter(v=>v!=null);
+    // 40+ vs 35-39 变化
+    const c=echarts.init(document.getElementById('c_age_gap'));
+    const rows=[];
+    ['男子','女子'].forEach(g=>items3.forEach(it=>{
+      const a=stat(gv(g==='男子'?'传奇男子 35-39':'传奇女子 35-39',it.key,g));
+      const b=stat(gv(g==='男子'?'传奇男子 40+':'传奇女子 40+',it.key,g));
+      if(!a||!b) return;
+      const chg = it.key==='s' ? (b.med-a.med)/a.med*100 : (a.med-b.med)/a.med*100; // 正=40+更强
+      rows.push({g,item:it.name,key:it.key,chg:Math.round(chg*10)/10,a:a.med,b:b.med,na:a.n,nb:b.n});
+    }));
+    const cats=items3.map(i=>i.name);
+    c.setOption({
+      animationDuration:600,
+      legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+      tooltip:Object.assign({},tt,{trigger:'axis',axisPointer:{type:'shadow'},formatter:ps=>{
+        const nm=ps[0].name;
+        return '<b>'+nm+'（40+ 相对 35-39）</b><br/>'+ps.map(p=>{
+          const r=rows.find(x=>x.item===nm&&x.g===p.seriesName); if(!r) return null;
+          return `${p.seriesName}：35-39 ${fmtV(r.key,r.a)} → 40+ ${fmtV(r.key,r.b)} （<b>${r.chg>0?'+':''}${r.chg}%</b>，n=${r.na}/${r.nb}）`;
+        }).filter(Boolean).join('<br/>');
+      }}),
+      grid:{left:16,right:16,top:38,bottom:8,containLabel:true},
+      xAxis:{type:'category',data:cats,axisLine,axisTick:{show:false},axisLabel:{fontSize:12,color:'#5a6474'}},
+      yAxis:{type:'value',name:'40+ 相对 35-39 的变化（%）',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+        splitLine,axisLabel:{fontSize:11,color:'#8a93a3',formatter:'{value}%'}},
+      series:['男子','女子'].map(g=>({name:g,type:'bar',barMaxWidth:30,
+        itemStyle:{color:g==='女子'?C_F:C_M,borderRadius:[4,4,0,0]},
+        data:cats.map(nm=>{const r=rows.find(x=>x.item===nm&&x.g===g);return r?r.chg:null;}),
+        label:{show:true,position:'top',fontSize:10,color:'#6b7484',
+          formatter:p=>p.value==null?'':((p.value>0?'+':'')+p.value+'%')}}))
+    });
+    charts.push(c);
+
+    // 年龄梯度折线（精英 → 35-39 → 40+）
+    const stages={r:['精英男子','传奇男子 35-39','传奇男子 40+'],f:['精英女子','传奇女子 35-39','传奇女子 40+']};
+    const stageLab=['精英组','传奇 35-39','传奇 40+'];
+    items3.forEach(it=>{
+      const el={r:'c_age7k',s:'c_agestr',sp:'c_agespd',e:'c_ageend'}[it.key];
+      const chk=['男子','女子'].map(g=>(g==='男子'?stages.r:stages.f).map(dv=>stat(gv(dv,it.key,g))));
+      if(!chk.some(l=>l.some(Boolean))){ charts.push(noData(el,'该项目在当前年龄分组（精英 / 传奇）中没有成绩')); return; }
+      const cc=echarts.init(document.getElementById(el));
+      const scale=isTime(it.key)?1/60:1;
+      const series=['男子','女子'].map(g=>{
+        const list=(g==='男子'?stages.r:stages.f).map(dv=>stat(gv(dv,it.key,g)));
+        return {name:g,type:'line',symbol:'circle',symbolSize:8,smooth:0.2,
+          lineStyle:{width:2.4,color:g==='女子'?C_F:C_M},itemStyle:{color:g==='女子'?C_F:C_M},
+          data:list.map(st=>st?+(st.med*scale).toFixed(2):null),
+          label:{show:true,fontSize:10,color:'#6b7484',position:'top',
+            formatter:p=>{const st=list[p.dataIndex];return st?fmtV(it.key,st.med):'';}}};
+      });
+      cc.setOption({
+        animationDuration:600,
+        title:{text:ITEM[it.key],left:'center',top:0,textStyle:{fontSize:13,fontWeight:650,color:'#3f4756'}},
+        legend:{bottom:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11,color:'#4a5261'}},
+        tooltip:Object.assign({},tt,{trigger:'axis',formatter:ps=>{
+          return '<b>'+ps[0].name+' · '+ITEM[it.key]+'</b><br/>'+ps.map(p=>{
+            const list=p.seriesIndex===0?stages.r:stages.f;
+            const st=stat(gv(list[p.dataIndex],it.key,p.seriesName));
+            return st?`${p.seriesName}：中位 ${fmtV(it.key,st.med)}（n=${st.n}）`:'';}).filter(Boolean).join('<br/>');
+        }}),
+        grid:{left:12,right:16,top:36,bottom:42,containLabel:true},
+        xAxis:{type:'category',data:stageLab,axisLine,axisTick:{show:false},
+          axisLabel:{fontSize:11,color:'#5a6474'}},
+        yAxis:{type:'value',scale:true,name:isTime(it.key)?'分钟':'kg',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+          splitLine,axisLabel:{fontSize:11,color:'#8a93a3'}},
+        series
+      });
+      charts.push(cc);
+    });
+
+    // 年龄表
+    const tb=document.getElementById('t_age');
+    const head='<thead><tr><th style="text-align:left">项目</th><th style="text-align:left">性别</th>'+
+      '<th class="num">精英组 n</th><th class="num">精英组 中位</th><th class="num">35-39 n</th><th class="num">35-39 中位</th>'+
+      '<th class="num">40+ n</th><th class="num">40+ 中位</th><th class="num">40+ vs 35-39</th>'+
+      '<th class="num">显著性 p</th></tr></thead>';
+    // 置换检验（均值差，双尾），比正态近似更稳
+    function permP(a,b,N){
+      N=N||4000;
+      if(a.length<4||b.length<4) return null;
+      const mean=x=>x.reduce((s,v)=>s+v,0)/x.length;
+      const obs=mean(a)-mean(b);
+      const all=[...a,...b], n1=a.length; let cnt=0;
+      for(let i=0;i<N;i++){
+        for(let j=all.length-1;j>0;j--){const k=(Math.random()*(j+1))|0;const t=all[j];all[j]=all[k];all[k]=t;}
+        const d=mean(all.slice(0,n1))-mean(all.slice(n1));
+        if(Math.abs(d)>=Math.abs(obs)-1e-9) cnt++;
+      }
+      return (cnt+1)/(N+1);
+    }
+    const body=[];
+    items3.forEach(it=>['男子','女子'].forEach(g=>{
+      const dvs=g==='男子'?stages.r:stages.f;
+      const list=dvs.map(dv=>stat(gv(dv,it.key,g)));
+      if(list.some(x=>!x)) return;
+      const chg = it.key==='s' ? (list[2].med-list[1].med)/list[1].med*100 : (list[1].med-list[2].med)/list[1].med*100;
+      const f=v=>fmtV(it.key,v);
+      const p=permP(gv(dvs[1],it.key,g),gv(dvs[2],it.key,g));
+      const sig = p!=null && p<0.05;
+      const ptxt = p==null ? '—' : (sig?`<b style="color:#c0392b">${p.toFixed(3)} ✓</b>`:`<span class="mut">${p.toFixed(3)}</span>`);
+      body.push(`<tr><td>${ITEM[it.key]}</td><td class="${g==='女子'?'g-f':'g-m'}">${g}</td>`+
+        `<td class="num">${list[0].n}</td><td class="num">${f(list[0].med)}</td>`+
+        `<td class="num">${list[1].n}</td><td class="num">${f(list[1].med)}</td>`+
+        `<td class="num">${list[2].n}</td><td class="num">${f(list[2].med)}</td>`+
+        `<td class="num"><b>${chg>0?'+':''}${chg.toFixed(1)}%</b></td>`+
+        `<td class="num">${ptxt}</td></tr>`);
+    }));
+    tb.innerHTML=head+'<tbody>'+body.join('')+'</tbody>';
+
+    // 文案
+    const mR=rows.filter(r=>r.g==='男子'), fR=rows.filter(r=>r.g==='女子');
+    const line=(r,g)=>{
+      const dvs=g==='男子'?['传奇男子 35-39','传奇男子 40+']:['传奇女子 35-39','传奇女子 40+'];
+      const p=permP(gv(dvs[0],r.key,g),gv(dvs[1],r.key,g));
+      return `${r.item} ${r.chg>0?'+':''}${r.chg}%`+(p!=null?`（p=${p.toFixed(3)}${p<0.05?'，<b style="color:#c0392b">显著</b>':'，不显著'}）`:'');
+    };
+    document.getElementById('n_age').innerHTML =
+      '<b>注意</b>：精英组不是纯年龄划分（含水平因素），把它作为「更年轻」的参照使用时，只能看方向不能看绝对值；'+
+      '真正干净的年龄对比只有 <b>传奇 35-39 vs 40+</b>（p 为 4000 次置换检验，双尾）。'+
+      '<br>男子：'+mR.map(r=>line(r,'男子')).join(' · ')+
+      '<br>女子：'+fR.map(r=>line(r,'女子')).join(' · ')+
+      '<br><b>读法</b>：只有男子的硬拉与 SPEED 达到统计显著，7K 与女子三项都不显著 —— '+
+      '「年龄先吃力量与爆发、不吃耐力」这个结论<b>目前只在男子身上站得住</b>；女子传奇组与精英组的差距，'+
+      '更可能来自<b>人群构成（选择效应：精英组不限年龄，强的大龄选手会去报精英组）</b>与训练世代，而不是衰老本身。'+
+      '<br><b>无法验证的部分</b>：官方接口没有个人年龄字段（agegroup 全为空），也没有往届成绩可追踪同一批人，'+
+      '因此「年龄效应 vs 选择效应」在本数据里不可分离，本节的组内对比只是<b>年龄效应的下界估计</b>。';
+  })();
+
+  // ================= 04 组别差异：箱线 + 散点 =================
+  function boxScatter(el, key){
+    const chart = echarts.init(document.getElementById(el));
+    const groups=[];
+    divs.forEach(d=>['男子','女子'].forEach(g=>{
+      const vals=P.filter(p=>p.dv===d&&p.g===g).map(p=>p[key]).filter(v=>v!=null);
+      if(vals.length>=3) groups.push({dv:d,g,vals});
+    }));
+    const cats=groups.map(x=> TEAM_DV.includes(x.dv)?(DIV_SHORT[x.dv]+'·'+(x.g==='男子'?'男':'女')):DIV_SHORT[x.dv]);
+    const scale=isTime(key)?1/60:1;
+    const EMPTY='-';
+    const dataM=[],dataF=[],pts=[];
+    groups.forEach((x,i)=>{
+      const st=stat(x.vals);
+      const box=[st.p10,st.p25,st.med,st.p75,st.p90].map(v=>+(v*scale).toFixed(2));
+      if(x.g==='男子') dataM.push({value:box}); else dataF.push({value:box});
+      x.vals.forEach(v=>pts.push([i+(Math.random()-0.5)*0.46, +(v*scale).toFixed(2), x.g]));
+    });
+    let im=0,jf=0;
+    const bm=groups.map(x=>x.g==='男子'?dataM[im++]:EMPTY);
+    const bf=groups.map(x=>x.g==='女子'?dataF[jf++]:EMPTY);
+    chart.setOption({
+      animationDuration:600,
+      grid:{left:16,right:20,top:34,bottom:96,containLabel:true},
+      tooltip:Object.assign({},tt,{trigger:'item',formatter:p=>{
+        if(p.seriesType==='scatter'){const g=groups[Math.round(p.value[0])];
+          const lab=TEAM_DV.includes(g.dv)?(DIV_SHORT[g.dv]+'·'+(g.g==='男子'?'男':'女')):(DIV_SHORT[g.dv]+' · '+g.g);
+          return `${lab}<br/><b>${fmtV(key,p.value[1]*(isTime(key)?60:1))}</b>`;}
+        const g=groups[p.dataIndex]; if(!g) return '';
+        const st=stat(g.vals);
+        const lab=TEAM_DV.includes(g.dv)?(DIV_SHORT[g.dv]+'·'+(g.g==='男子'?'男':'女')):(DIV_SHORT[g.dv]+' · '+g.g);
+        return `<b>${lab}</b>（n=${st.n}）<br/>中位 ${fmtV(key,st.med)}<br/>P25–P75 ${fmtV(key,st.p25)} – ${fmtV(key,st.p75)}`;
+      }}),
+      xAxis:{type:'category',data:cats,axisLine,axisTick:{show:false},
+        axisLabel:{fontSize:10.5,color:'#5a6474',interval:0,rotate:35}},
+      yAxis:{type:'value',name:isTime(key)?'分钟':'kg',nameTextStyle:{color:'#8a93a3',fontSize:11},
+        splitLine,axisLabel:{color:'#8a93a3',fontSize:11},scale:true},
+      series:[
+        {name:'',type:'scatter',data:pts,symbolSize:4.5,z:1,
+         itemStyle:{opacity:.30,color:p=>p.value[2]==='女子'?C_F:C_M},emphasis:{scale:1.8}},
+        {name:'男子',type:'boxplot',data:bm,boxWidth:['22%','48%'],z:3,
+         itemStyle:{color:'rgba(28,111,214,.10)',borderColor:C_M,borderWidth:1.6}},
+        {name:'女子',type:'boxplot',data:bf,boxWidth:['22%','48%'],z:3,
+         itemStyle:{color:'rgba(214,51,108,.10)',borderColor:C_F,borderWidth:1.6}}
+      ]
+    });
+    return chart;
+  }
+  function boxScatterWrap(el,key){
+    const has=P.some(p=>p[key]!=null);
+    if(!has) return noData(el,'当前统计范围内没有该项目的成绩');
+    return boxScatter(el,key);
+  }
+  charts.push(boxScatterWrap('c_7k','r'));
+  charts.push(boxScatterWrap('c_str','s'));
+  charts.push(boxScatterWrap('c_spd','sp'));
+  charts.push(boxScatterWrap('c_end','e'));
+
+  // 硬拉前十门槛
+  (function(){
+    const c=echarts.init(document.getElementById('c_str2'));
+    const rows=GROUPS.map(gr=>{
+      const v=gVals(gr,'s').sort((a,b)=>b-a);
+      if(v.length<3) return null;
+      return {d:gr.label,g:gr.g,med:stat(v).med,top10:v[Math.min(9,v.length-1)]};
+    }).filter(Boolean).sort((a,b)=>b.med-a.med);
+    c.setOption({
+      animationDuration:600,
+      legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+      tooltip:Object.assign({},tt,{trigger:'axis',axisPointer:{type:'shadow'}}),
+      grid:{left:16,right:16,top:36,bottom:8,containLabel:true},
+      xAxis:{type:'category',data:rows.map(r=>r.d),axisLine,axisTick:{show:false},
+        axisLabel:{fontSize:10,color:'#5a6474',interval:0,rotate:34}},
+      yAxis:{type:'value',name:'kg',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},splitLine,axisLabel:{fontSize:11,color:'#8a93a3'}},
+      series:[
+        {name:'中位数',type:'bar',barMaxWidth:20,data:rows.map(r=>Math.round(r.med*10)/10),
+          itemStyle:{color:'#f6c9c9',borderRadius:[4,4,0,0]},
+          label:{show:true,position:'top',fontSize:9.5,color:'#b07777'}},
+        {name:'前 10 名门槛',type:'line',data:rows.map(r=>Math.round(r.top10*10)/10),
+          symbol:'circle',symbolSize:7,lineStyle:{width:2,color:'#c0392b'},itemStyle:{color:'#c0392b'},
+          label:{show:true,position:'top',fontSize:9.5,color:'#c0392b'}}
+      ]
+    });
+    charts.push(c);
+  })();
+
+  // 团队 vs 个人
+  (function(){
+    const pick=(p,k)=>k==='s'?p.s:k==='r'?p.r:k==='e'?p.e:p.sp;
+    const cats=[],data=[];
+    ['男子','女子'].forEach(g=>items3.forEach(it=>{
+      const k=it.key;
+      const ind=P.filter(p=>p.m===113&&p.u==='个人'&&p.g===g).map(p=>pick(p,k)).filter(v=>v!=null);
+      const tm=P.filter(p=>p.m===113&&p.u!=='个人'&&p.g===g).map(p=>pick(p,k)).filter(v=>v!=null);
+      if(!ind.length||!tm.length) return;
+      cats.push({label:g+'·'+ITEM[k],k,g});
+      data.push({ind:stat(ind),tm:stat(tm),scale:isTime(k)?1/60:1});
+    }));
+    if(!cats.length){noData('c_teamvs','当前统计范围内没有总决赛的个人与团队成绩');return;}
+    const c=echarts.init(document.getElementById('c_teamvs'));
+    c.setOption({
+      animationDuration:600,
+      legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+      tooltip:Object.assign({},tt,{trigger:'axis',axisPointer:{type:'shadow'},formatter:ps=>{
+        const d=data[ps[0].dataIndex],cc=cats[ps[0].dataIndex];
+        const f=v=>fmtV(cc.k,v);
+        return `<b>${cc.g} · ${ITEM[cc.k]}</b><br/>个人参赛 中位 ${f(d.ind.med)}（n=${d.ind.n}）<br/>团队成员 中位 ${f(d.tm.med)}（n=${d.tm.n}）`;
+      }}),
+      grid:{left:16,right:16,top:38,bottom:8,containLabel:true},
+      xAxis:{type:'category',data:cats.map(x=>x.label),axisLine,axisTick:{show:false},
+        axisLabel:{fontSize:11,color:'#5a6474',rotate:16}},
+      yAxis:{type:'value',name:'中位数（各自单位）',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},splitLine,axisLabel:{fontSize:11,color:'#8a93a3'}},
+      series:[
+        {name:'个人参赛',type:'bar',barMaxWidth:22,data:data.map(d=>+(d.ind.med*d.scale).toFixed(2)),
+          itemStyle:{color:'#9aa7bb',borderRadius:[4,4,0,0]},
+          label:{show:true,position:'top',fontSize:9.5,color:'#6b7484',
+            formatter:p=>{const cc=cats[p.dataIndex];return fmtV(cc.k,data[p.dataIndex].ind.med);}}},
+        {name:'团队成员',type:'bar',barMaxWidth:22,data:data.map(d=>+(d.tm.med*d.scale).toFixed(2)),
+          itemStyle:{color:'#0f9d76',borderRadius:[4,4,0,0]},
+          label:{show:true,position:'top',fontSize:9.5,color:'#0b7a5c',
+            formatter:p=>{const cc=cats[p.dataIndex];return fmtV(cc.k,data[p.dataIndex].tm.med);}}}
+      ]
+    });
+    charts.push(c);
+  })();
+
+  // ================= 05 中外对比 =================
+  (function(){
+    const base={};
+    ['中国','海外'].forEach(rg=>['男子','女子'].forEach(g=>items3.forEach(it=>{
+      const st=stat(fVals(p=>p.rg===rg&&p.g===g,it.key));
+      if(st) base[rg+'|'+g+'|'+it.key]=st;
+    })));
+    // 差距图
+    const c=echarts.init(document.getElementById('c_nat_gap'));
+    const rows=[];
+    ['男子','女子'].forEach(g=>items3.forEach(it=>{
+      const A=base['中国|'+g+'|'+it.key], B=base['海外|'+g+'|'+it.key];
+      if(!A||!B) return;
+      const d = it.key==='s' ? (B.med-A.med)/A.med*100 : (A.med-B.med)/A.med*100;
+      rows.push({g,item:it.name,key:it.key,d:Math.round(d*10)/10,A:A.med,B:B.med,na:A.n,nb:B.n});
+    }));
+    const cats=items3.map(i=>i.name);
+    c.setOption({
+      animationDuration:600,
+      legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+      tooltip:Object.assign({},tt,{trigger:'axis',axisPointer:{type:'shadow'},formatter:ps=>{
+        const nm=ps[0].name;
+        return '<b>'+nm+'</b><br/>'+ps.map(p=>{
+          const r=rows.find(x=>x.item===nm&&x.g===p.seriesName); if(!r) return null;
+          return `${p.seriesName}：中国 ${fmtV(r.key,r.A)} / 海外 ${fmtV(r.key,r.B)} → 海外 <b>${r.d>0?'+':''}${r.d}%</b>（n=${r.na}/${r.nb}）`;
+        }).filter(Boolean).join('<br/>');
+      }}),
+      grid:{left:16,right:16,top:38,bottom:8,containLabel:true},
+      xAxis:{type:'category',data:cats,axisLine,axisTick:{show:false},axisLabel:{fontSize:12,color:'#5a6474'}},
+      yAxis:{type:'value',name:'海外相对中国（%）',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+        splitLine,axisLabel:{fontSize:11,color:'#8a93a3',formatter:'{value}%'}},
+      series:['男子','女子'].map(g=>({name:g,type:'bar',barMaxWidth:30,
+        itemStyle:{color:g==='女子'?C_F:C_M,borderRadius:[4,4,0,0]},
+        data:cats.map(nm=>{const r=rows.find(x=>x.item===nm&&x.g===g);return r?r.d:null;}),
+        label:{show:true,position:'top',fontSize:10,color:'#6b7484',
+          formatter:p=>p.value==null?'':((p.value>0?'+':'')+p.value+'%')}}))
+    });
+    charts.push(c);
+
+    // 占比环形
+    const pc=echarts.init(document.getElementById('c_nat_pie'));
+    const regs=REG_ORDER.map(r=>({name:r,value:P.filter(p=>p.region===r).length})).filter(x=>x.value>0);
+    pc.setOption({
+      animationDuration:600,
+      tooltip:Object.assign({},tt,{formatter:p=>`${p.name}：${p.value} 人（${p.percent}%）`}),
+      legend:{type:'scroll',orient:'vertical',right:0,top:'center',itemWidth:9,itemHeight:9,
+        textStyle:{fontSize:11.5,color:'#4a5261'}},
+      series:[{type:'pie',radius:['42%','72%'],center:['38%','50%'],avoidLabelOverlap:true,
+        itemStyle:{borderColor:'#fff',borderWidth:2},
+        label:{show:true,formatter:'{d}%',fontSize:11,color:'#4a5261'},
+        data:regs}]
+    });
+    charts.push(pc);
+
+    // 分地区中位
+    items3.forEach(it=>{
+      const el={r:'c_nat7k',s:'c_natstr',sp:'c_natspd',e:'c_natend'}[it.key];
+      const _pre=REG_ORDER.filter(r=>P.some(p=>p.region===r))
+        .map(r=>({m:stat(fVals(p=>p.region===r&&p.g==='男子',it.key)),f:stat(fVals(p=>p.region===r&&p.g==='女子',it.key))}))
+        .filter(x=>x.m&&x.m.n>=5||x.f&&x.f.n>=5);
+      if(!_pre.length){ charts.push(noData(el,'该地区分组下该项目的样本不足（n&lt;5）')); return; }
+      const cc=echarts.init(document.getElementById(el));
+      const scale=isTime(it.key)?1/60:1;
+      const regs=REG_ORDER.filter(r=>P.some(p=>p.region===r));
+      const stats=regs.map(r=>({r,
+        m:stat(fVals(p=>p.region===r&&p.g==='男子',it.key)),
+        f:stat(fVals(p=>p.region===r&&p.g==='女子',it.key))}))
+        .filter(x=>x.m&&x.m.n>=5||x.f&&x.f.n>=5);
+      cc.setOption({
+        animationDuration:600,
+        title:{text:ITEM[it.key],left:'center',top:0,textStyle:{fontSize:13,fontWeight:650,color:'#3f4756'}},
+        legend:{bottom:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11,color:'#4a5261'}},
+        tooltip:Object.assign({},tt,{trigger:'axis',axisPointer:{type:'shadow'},formatter:ps=>{
+          const r=stats[ps[0].dataIndex];
+          return '<b>'+r.r+' · '+ITEM[it.key]+'</b><br/>'+
+            (r.m?`男子 中位 ${fmtV(it.key,r.m.med)}（n=${r.m.n}）<br/>`:'')+
+            (r.f?`女子 中位 ${fmtV(it.key,r.f.med)}（n=${r.f.n}）`:'');
+        }}),
+        grid:{left:12,right:14,top:34,bottom:44,containLabel:true},
+        xAxis:{type:'category',data:stats.map(x=>x.r.replace('俄罗斯/中亚/中东','俄·中亚').replace('欧美/其他海外','欧美').replace('港澳/东南亚华人','港澳·东南亚')),
+          axisLine,axisTick:{show:false},axisLabel:{fontSize:10,color:'#5a6474',interval:0,rotate:28}},
+        yAxis:{type:'value',scale:true,name:isTime(it.key)?'分钟':'kg',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+          splitLine,axisLabel:{fontSize:11,color:'#8a93a3'}},
+        series:['男子','女子'].map(g=>({name:g,type:'bar',barMaxWidth:16,
+          itemStyle:{color:g==='女子'?C_F:C_M,borderRadius:[4,4,0,0]},
+          data:stats.map(x=>{const st=g==='男子'?x.m:x.f;return st&&st.n>=5?+(st.med*scale).toFixed(2):null;})}))
+      });
+      charts.push(cc);
+    });
+
+    // 表
+    const tb=document.getElementById('t_nat');
+    const head='<thead><tr><th style="text-align:left">来源地区</th><th style="text-align:left">性别</th><th class="num">人数</th>'+
+      items3.map(i=>`<th class="num">${i.name} 中位</th>`).join('')+'</tr></thead>';
+    const body=[];
+    REG_ORDER.filter(r=>P.some(p=>p.region===r)).forEach(r=>['男子','女子'].forEach(g=>{
+      const sub=P.filter(p=>p.region===r&&p.g===g);
+      if(!sub.length) return;
+      const sts=items3.map(it=>stat(sub.map(p=>it.key==='s'?p.s:(it.key==='r'?p.r:p.sp)).filter(v=>v!=null)));
+      body.push(`<tr><td>${r}</td><td class="${g==='女子'?'g-f':'g-m'}">${g}</td><td class="num">${sub.length}</td>`+
+        sts.map((st,i)=>`<td class="num">${st?fmtV(items3[i].key,st.med):'—'}</td>`).join('')+'</tr>');
+    }));
+    ['中国','海外'].forEach(rg=>{
+      const sub=P.filter(p=>p.rg===rg);
+      const sts=items3.map(it=>stat(sub.map(p=>it.key==='s'?p.s:(it.key==='r'?p.r:p.sp)).filter(v=>v!=null)));
+      body.push(`<tr class="ovl"><td>${rg}</td><td>合计</td><td class="num">${sub.length}</td>`+
+        sts.map((st,i)=>`<td class="num">${st?fmtV(items3[i].key,st.med):'—'}</td>`).join('')+'</tr>');
+    });
+    tb.innerHTML=head+'<tbody>'+body.join('')+'</tbody>';
+
+    const unsure=P.filter(p=>p.conf==='低').length;
+    document.getElementById('n_nat').innerHTML =
+      `<b>口径</b>：按姓名罗马字来源推断，中国含港澳与东南亚华人（${P.filter(p=>p.region==='港澳/东南亚华人').length} 人）。`+
+      `当前判定：中国 ${nCN} 人 / 海外 ${nOS} 人，其中 <b>${unsure} 人为低置信</b>（昵称或中韩、中西重叠姓名），已列在文末待复核清单。`+
+      '比例差距在 5% 以内时建议视为无差异。';
+  })();
+
+  // ================= 06 项目间关联 =================
+  (function(){
+    const pairs=[['r','sp'],['r','s'],['s','sp'],['r','e'],['s','e'],['sp','e']];
+    const labels=items3.map(i=>i.name);
+    function corrChart(el,gender){
+      const c=echarts.init(document.getElementById(el));
+      const sub=P.filter(p=>p.g===gender);
+      const M=[[1,null,null,null],[null,1,null,null],[null,null,1,null],[null,null,null,1]];
+      const idx={r:0,s:1,sp:2,e:3};
+      pairs.forEach(([a,b])=>{
+        const xs=[],ys=[];
+        sub.forEach(p=>{
+          const va=p[a], vb=p[b];
+          if(va==null||vb==null) return;
+          // 方向统一：硬拉取负，使「越强 = 数值越小」
+          xs.push(a==='s'?-va:va); ys.push(b==='s'?-vb:vb);
+        });
+        const r=pearson(xs,ys);
+        M[idx[a]][idx[b]]=r==null?null:+(r).toFixed(2);
+        M[idx[b]][idx[a]]=M[idx[a]][idx[b]];
+      });
+      const data=[];
+      for(let i=0;i<4;i++) for(let j=0;j<4;j++) data.push({value:[j,i,M[i][j]]});
+      c.setOption({
+        animationDuration:600,
+        title:{text:gender,left:'center',top:0,textStyle:{fontSize:13,fontWeight:650,color:'#3f4756'}},
+        tooltip:Object.assign({},tt,{formatter:p=>{
+          const v=p.data.value[2]; if(v==null) return '';
+          return `${labels[p.data.value[1]]} ↔ ${labels[p.data.value[0]]}<br/>r = <b>${v}</b>`;
+        }}),
+        grid:{left:70,right:20,top:44,bottom:26},
+        xAxis:{type:'category',data:labels,axisLine:{show:false},axisTick:{show:false},
+          axisLabel:{fontSize:10.5,color:'#4a5261',interval:0,rotate:22},position:'top'},
+        yAxis:{type:'category',data:labels,inverse:true,axisLine:{show:false},axisTick:{show:false},
+          axisLabel:{fontSize:10.5,color:'#4a5261',interval:0}},
+        visualMap:{min:-1,max:1,show:false,dimension:2,seriesIndex:0,
+          inRange:{color:['#c0392b','#e8a49a','#f3f4f7','#7fc3ac','#0f8a6c']}},
+        series:[{type:'heatmap',data,
+          itemStyle:{borderColor:'#fff',borderWidth:5,borderRadius:7},
+          label:{show:true,fontSize:12,fontWeight:600,formatter:p=>p.data.value[2]==null?'':(p.data.value[2]>0?'+':'')+p.data.value[2]}}]
+      });
+      charts.push(c);
+      return M;
+    }
+    const Mm=corrChart('c_corr_m','男子');
+    const Mf=corrChart('c_corr_f','女子');
+    const idx={r:0,s:1,sp:2,e:3};
+
+    function scatter(el,ka,kb){
+      const c=echarts.init(document.getElementById(el));
+      const by={男子:[],女子:[]};
+      P.filter(p=>p.m===113).forEach(p=>{
+        const get=k=>p[k];
+        const va=get(ka), vb=get(kb);
+        if(va==null||vb==null) return;
+        by[p.g||'男子'].push([ka==='s'?va:+(va/60).toFixed(2), kb==='s'?vb:+(vb/60).toFixed(2), p.n, DIV_SHORT[p.dv]]);
+      });
+      c.setOption({
+        animationDuration:600,
+        legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+        tooltip:Object.assign({},tt,{formatter:p=>`<b>${p.value[2]}</b>（${p.value[3]}）<br/>${ITEM[ka]} ${ka==='s'?fmtKg(p.value[0]):fmtT(p.value[0]*60)}<br/>${ITEM[kb]} ${kb==='s'?fmtKg(p.value[1]):fmtT(p.value[1]*60)}`}),
+        grid:{left:14,right:18,top:36,bottom:48,containLabel:true},
+        xAxis:{type:'value',name:ITEM[ka]+(ka==='s'?'（kg）':'（分钟）'),nameLocation:'middle',nameGap:28,
+          nameTextStyle:{fontSize:11,color:'#8a93a3'},splitLine,axisLabel:{fontSize:11,color:'#8a93a3'},scale:true},
+        yAxis:{type:'value',name:ITEM[kb]+(kb==='s'?'（kg）':'（分钟）'),nameTextStyle:{fontSize:11,color:'#8a93a3'},
+          splitLine,axisLabel:{fontSize:11,color:'#8a93a3'},scale:true},
+        series:['男子','女子'].map(g=>({name:g,type:'scatter',data:by[g],symbolSize:6.5,
+          itemStyle:{color:g==='女子'?C_F:C_M,opacity:.5}}))
+      });
+      charts.push(c);
+    }
+    scatter('c_scatter','r','sp');
+    scatter('c_scatter2','s','sp');
+    scatter('c_scatter3','r','e');
+    scatter('c_scatter4','s','e');
+
+    const g=(M,a,b)=>{const v=M[idx[a]][idx[b]];return v==null?'—':v;};
+    document.getElementById('n_corr').innerHTML =
+      `<b>读法</b>：r 已按「越强 = 越小」统一方向，所以 <b>正数越大 = 两项越同步</b>；接近 0 表示基本独立。<br>`+
+      `男子：7K↔SPEED <b>${g(Mm,'r','sp')}</b> ｜ 7K↔硬拉 <b>${g(Mm,'r','s')}</b> ｜ 硬拉↔SPEED <b>${g(Mm,'s','sp')}</b> ｜ 7K↔END <b>${g(Mm,'r','e')}</b> ｜ 硬拉↔END <b>${g(Mm,'s','e')}</b> ｜ SPEED↔END <b>${g(Mm,'sp','e')}</b><br>`+
+      `女子：7K↔SPEED <b>${g(Mf,'r','sp')}</b> ｜ 7K↔硬拉 <b>${g(Mf,'r','s')}</b> ｜ 硬拉↔SPEED <b>${g(Mf,'s','sp')}</b> ｜ 7K↔END <b>${g(Mf,'r','e')}</b> ｜ 硬拉↔END <b>${g(Mf,'s','e')}</b> ｜ SPEED↔END <b>${g(Mf,'sp','e')}</b><br>`+
+      `一般经验：|r|&lt;0.3 弱相关、0.3–0.6 中等、&gt;0.6 强相关。每对系数只取两项都完赛的选手；<b>ENDURANCE 样本明显更小</b>（总决赛限职业组 80 人 + 公开赛 91 人，且公开赛无 7K 成绩，故与 7K 的配对仍只来自职业组）。`;
+  })();
+
+  // ================= 07 明细表 =================
+  (function(){
+    const selM=document.getElementById('f_match'),selD=document.getElementById('f_div'),
+          selS=document.getElementById('f_src'),selN=document.getElementById('f_nat'),
+          q=document.getElementById('f_q'),cnt=document.getElementById('f_count'),
+          tb=document.querySelector('#t_all tbody');
+    [...new Set(P.map(p=>p.m))].forEach(m=>selM.insertAdjacentHTML('beforeend',`<option value="${m}">${MATCH[m]||m}</option>`));
+    divs.forEach(d=>selD.insertAdjacentHTML('beforeend',`<option value="${d}">${d}</option>`));
+    function render(){
+      const fm=selM.value,fd=selD.value,fs=selS.value,fn=selN.value,fq=(q.value||'').trim().toLowerCase();
+      const list=P.filter(p=>
+        (!fm||String(p.m)===fm)&&(!fd||p.dv===fd)&&(!fs||(p.u==='个人'?'个人':'团队拆分')===fs)&&
+        (!fn||p.rg===fn)&&(!fq||(p.n||'').toLowerCase().includes(fq)||(p.t||'').toLowerCase().includes(fq))
+      ).sort((a,b)=>{
+        if(a.m!==b.m) return b.m-a.m;
+        const ia=DIV_ORDER.indexOf(a.dv),ib=DIV_ORDER.indexOf(b.dv);
+        if(ia!==ib) return ia-ib;
+        return (b.s||-1)-(a.s||-1);
+      });
+      cnt.textContent=list.length+' / '+P.length+' 条';
+      tb.innerHTML=list.map(p=>`<tr>
+        <td class="mut">${MATCH[p.m]||p.m}</td><td>${p.dv}</td><td>${p.n||''}</td>
+        <td class="mut">${p.t||'—'}</td>
+        <td class="${p.g==='女子'?'g-f':'g-m'}">${p.g||'—'}</td>
+        <td class="mut">${p.region||'—'}</td>
+        <td class="num">${fmtT(p.r)}</td><td class="num">${fmtKg(p.s)}</td><td class="num">${fmtT(p.sp)}</td><td class="num">${fmtT(p.e)}</td>
+        <td class="mut">${p.u==='个人'?'个人参赛':'团队成员'}</td></tr>`).join('');
+    }
+    [selM,selD,selS,selN].forEach(s=>s.addEventListener('change',render));
+    q.addEventListener('input',render);
+    render();
+
+    // 待复核清单
+    const tb2=document.getElementById('t_unsure');
+    const seen={};
+    P.forEach(p=>{ if(p.conf==='低') seen[p.n]=p.region; });
+    const rows=Object.entries(seen).sort().map(([n,r])=>`<tr><td>${n}</td><td class="mut">${r}</td><td>${r==='中国'||r==='港澳/东南亚华人'?'中国':'海外'}</td></tr>`);
+    tb2.innerHTML='<thead><tr><th style="text-align:left">姓名</th><th style="text-align:left">判定地区</th><th style="text-align:left">中外分组</th></tr></thead><tbody>'+rows.join('')+'</tbody>';
+  })();
+
+  // ================= 密度脊线图（新配色 + 更宽松） =================
+  const fmtPace = s => { const v=s/7; return Math.floor(v/60)+':'+String(Math.round(v%60)).padStart(2,'0')+'/km'; };
+  // 通用单位与方向：kg / reps（越大越好），time（越小越好）
+  const unitOf = k => (k==='s'||k==='sn') ? 'kg' : (k==='a2'||k==='a3') ? 'reps' : 'time';
+  const hiKey  = k => (k==='s'||k==='sn'||k==='a2'||k==='a3');
+  const fmtX   = (k,v) => v==null ? '—'
+    : unitOf(k)==='kg' ? String(Math.round(v*10)/10)
+    : unitOf(k)==='reps' ? String(Math.round(v))
+    : fmtT(v);
+  const fmtXu  = (k,v) => v==null ? '—'
+    : unitOf(k)==='kg' ? (Math.round(v*10)/10)+' kg'
+    : unitOf(k)==='reps' ? Math.round(v)+' 次'
+    : fmtT(v);
+  const axisFmt = k => (unitOf(k)==='time') ? (v=>fmtT(v)) : (v=>Math.round(v));
+  function kdeCurve(vals,grid){
+    const n=vals.length;
+    const mean=vals.reduce((a,b)=>a+b,0)/n;
+    const sd=Math.sqrt(vals.reduce((a,b)=>a+(b-mean)*(b-mean),0)/n);
+    const s=[...vals].sort((a,b)=>a-b);
+    const iqr=s[Math.min(n-1,Math.floor(n*0.75))]-s[Math.floor(n*0.25)];
+    let bw=0.9*Math.min(sd,iqr/1.349)*Math.pow(n,-0.2);
+    if(!(bw>0)) bw=(grid[grid.length-1]-grid[0])/20;
+    return grid.map(x=>{let sum=0;for(const v of vals){const u=(x-v)/bw;sum+=Math.exp(-0.5*u*u);}return sum/(n*bw*2.5066282746);});
+  }
+  const RAMPS = {
+    r : ['#0a5c52','#12876f','#3aa383','#6dbfa4','#96cfba','#bcded2'],
+    s : ['#7d1f2f','#a62f3c','#c4524f','#dd8467','#ecab92','#f4ccb9'],
+    sp: ['#243066','#35519f','#4d75c3','#739ad8','#9dbde8','#c4d9f3'],
+    e : ['#5b3a8e','#7a52ad','#9a74c6','#b79cda','#d0bfe9','#e5dcf4'],
+    od: ['#7a4b12','#9c6a1f','#bd8c39','#d4ad68','#e5c99b','#f2e3c8'],
+    a1: ['#0b5566','#17788c','#3f9aa8','#78b9c1','#a5d0d3','#cae5e5'],
+    a2: ['#3f5d0f','#5d8517','#83a83c','#a8c46e','#c6d99e','#e0ecc9'],
+    a3: ['#8c2f5e','#a94b74','#c27496','#d69fb6','#e6c1d0','#f2dce6'],
+    xo: ['#4a3b6b','#635290','#8473ad','#a89cc7','#c6bede','#e0dcf0'],
+    ev: ['#1f5f5a','#357f78','#599e97','#84bab3','#abd2cc','#d0e8e4'],
+    op: ['#6b2b1f','#8f4230','#b06a4c','#cb9576','#dfb9a2','#efd8c9'],
+    sn: ['#12466b','#1f6690','#3f8ab0','#71aec7','#a0cadb','#c8e3ec']
+  };
+  function hexA(hex,a){
+    const n=parseInt(hex.slice(1),16);
+    return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+  }
+  function rampColor(key,i,n){
+    const R=RAMPS[key]||RAMPS.r;
+    const t = n<=1?0 : i/(n-1);
+    return R[Math.min(R.length-1,Math.round(t*(R.length-1)))];
+  }
+
+  function ridgeRows(key,gender){
+    const sub=GROUPS.filter(gr=>gr.g===gender);
+    let rows=sub.map(gr=>({label:gr.bl, full:gr.label, g:gr.g, vals:gVals(gr,key)}))
+      .map(x=> x.vals.length>=5 ? Object.assign(x,{st:stat(x.vals)}) : null)
+      .filter(Boolean);
+    const all=[].concat(...sub.map(gr=>gVals(gr,key)));
+    if(all.length>=8) rows=[{label:'整体 · '+(gender==='男子'?'男':'女'), full:'全部'+gender, g:gender, overall:true, vals:all, st:stat(all)}].concat(rows);
+    // 按中位排序：时间升序（快在前），重量降序（重在前）
+    const grp=rows.filter(r=>r.overall), rest=rows.filter(r=>!r.overall);
+    rest.sort((a,b)=> hiKey(key) ? b.st.med-a.st.med : a.st.med-b.st.med);
+    return grp.concat(rest);
+  }
+
+  function ridgeOpt(rows,key){
+    const lo0=Math.min(...rows.map(r=>r.st.min)), hi0=Math.max(...rows.map(r=>r.st.max));
+    const pad=(hi0-lo0)*0.08||1;
+    const lo=(unitOf(key)==='kg')?Math.max(0,lo0-pad):lo0-pad,
+      hi=(unitOf(key)==='kg')?Math.ceil((hi0+pad)/5)*5:(unitOf(key)==='reps'?Math.ceil(hi0+pad):hi0+pad), N=200;
+    const grid=[]; for(let i=0;i<N;i++) grid.push(lo+(hi-lo)*i/(N-1));
+    const nRest=rows.filter(r=>!r.overall).length;
+    const densArr=rows.map(row=>{
+      const d=kdeCurve(row.vals,grid);
+      const peak=Math.max(...d)||1;
+      const sc=(row.overall?0.66:0.60)/peak;   // 山峰高度，越小重叠越少
+      return d.map(v=>v*sc);
+    });
+    const styleOf=(row,i)=>{
+      if(row.overall) return {overall:true, col:C_OV, tcol:C_OV, fill:hexA(C_OV,.12), lw:2.0,
+        font:'700 10.5px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif'};
+      const idx=rows.filter(r=>!r.overall).indexOf(row);
+      const col=rampColor(key,idx,nRest);
+      return {col, tcol:'#3d4655', fill:hexA(col,.42), lw:1.5,
+        font:'600 10.5px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif'};
+    };
+    return {
+      animationDuration:0,
+      tooltip:Object.assign({},tt,{trigger:'item',formatter:p=>{
+        const row=rows[p.dataIndex]; if(!row||p.componentType!=='series') return '';
+        const st=row.st;
+        return `<b>${row.overall?('整体 · '+row.g):row.full}</b>（n=${st.n}）<br/>中位 <b>${fmtXu(key,st.med)}</b><br/>`+
+          `P25–P75 ${unitOf(key)==='time'?(fmtT(st.p25)+' – '+fmtT(st.p75)):(Math.round(st.p25)+' – '+Math.round(st.p75)+(unitOf(key)==='kg'?' kg':' 次'))}`;
+      }}),
+      grid:{left:16,right:104,top:18,bottom:32,containLabel:true},
+      xAxis:{type:'value',min:lo,max:hi,axisLine:{show:false},axisTick:{show:false},splitLine:{show:false},
+        axisLabel:{fontSize:10.5,color:'#8a93a3',showMinLabel:false,showMaxLabel:false,
+          formatter:axisFmt(key)}},
+      yAxis:{type:'value',min:-1,max:rows.length-0.1,interval:1,
+        axisLine:{show:false},axisTick:{show:false},splitLine:{show:false},
+        axisLabel:{fontSize:11.5,color:'#3f4756',fontWeight:600,margin:14,
+          formatter:(v,idx)=>{const i=rows.length-1-Math.round(v);return (rows[i]&&Number.isInteger(v))?(rows[i].overall?'{a|'+rows[i].label+'}':rows[i].label):'';},
+          rich:{a:{fontWeight:700,color:'#14181f',fontSize:12.5}}}},
+      series:[{
+        type:'custom', clip:true, z:3,
+        renderItem:(params,api)=>{
+          const i=params.dataIndex;
+          const row=rows[i], dens=densArr[i], sty=styleOf(row,i);
+          const baseVal=rows.length-1-i;
+          const rowH=row.overall?0.66:0.60;
+          const baseY=api.coord([grid[0],baseVal])[1];
+          const topY=api.coord([grid[0],baseVal+rowH])[1];
+          const pts=[];
+          for(let j=0;j<N;j++) pts.push(api.coord([grid[j],baseVal+dens[j]]));
+          const poly=pts.concat([{x:pts[N-1][0],y:baseY},{x:pts[0][0],y:baseY}]);
+          const medX=api.coord([row.st.med,baseVal])[0];
+          const lab=fmtXu(key,row.st.med);
+          return {type:'group',children:[
+            {type:'polygon',shape:{points:poly},style:{fill:sty.fill,stroke:sty.col,lineWidth:sty.lw}},
+            {type:'line',shape:{x1:medX,y1:baseY,x2:medX,y2:topY-2},
+              style:{stroke:sty.col,lineWidth:1.2,lineDash:[4,3]}},
+            {type:'text',style:{text:lab,x:medX,y:topY-12,fill:sty.overall?sty.col:sty.tcol,font:sty.font,align:'center'}}
+          ]};
+        },
+        data:rows.map((r,i)=>({value:[i],name:r.label}))
+      }]
+    };
+  }
+
+  function ridgeTable(tbl,rows,key,opts){
+    const f=v=>fmtX(key,v);
+    const U=unitOf(key);
+    const loLb=U==='kg'?'最轻':(U==='reps'?'最少':'最快');
+    const hiLb=U==='kg'?'最重':(U==='reps'?'最多':'最慢');
+    const unitLb=U==='kg'?'（kg）':(U==='reps'?'（次）':'（用时）');
+    const head='<thead><tr><th style="text-align:left">系列</th><th class="num">n</th>'+
+      '<th class="num">'+loLb+'</th><th class="num">P10</th><th class="num">P25</th>'+
+      '<th class="num">中位'+unitLb+'</th><th class="num">P75</th><th class="num">P90</th>'+
+      '<th class="num">'+hiLb+'</th>'+
+      (opts&&opts.pace?'<th class="num">中位配速</th>':'')+'</tr></thead>';
+    const body=rows.map(row=>{
+      const st=row.st;
+      const bg=row.overall?'rgba(20,24,31,.06)':'transparent';
+      const cell=row.overall
+        ? '<td style="font-weight:700">'+row.label+'</td>'
+        : `<td class="${row.g==='女子'?'g-f':'g-m'}">${row.full||row.label}</td>`;
+      return '<tr style="background:'+bg+'">'+cell+`<td class="num">${st.n}</td>`+
+        [st.min,st.p10,st.p25,st.med,st.p75,st.p90,st.max].map(v=>`<td class="num">${f(v)}</td>`).join('')+
+        ((opts&&opts.pace)?`<td class="num">${fmtPace(st.med)}</td>`:'')+'</tr>';
+    }).join('');
+    tbl.innerHTML=head+'<tbody>'+body+'</tbody>';
+  }
+
+  const ridgeCharts=[];
+  function ridgeTabs(tabSel,el,tblId,key,opts){
+    const box=document.getElementById(el), tbl=document.getElementById(tblId);
+    const tabBox=document.querySelector('.tabs[data-tabs="'+tabSel+'"]');
+    if(!box||!tabBox) return;
+    const btns=[...tabBox.querySelectorAll('button')];
+    let gender='男子', chart=null;
+    function paint(g){
+      const rows=ridgeRows(key,g);
+      if(!rows.length){
+        box.style.height='60px'; box.innerHTML='<div style="padding:16px 2px;color:#8a93a3;font-size:12.5px">该性别在当前统计范围内没有该项目的成绩</div>';
+        if(chart){chart.dispose();chart=null;} tbl.innerHTML=''; return;
+      }
+      if(!chart){ box.innerHTML=''; chart=echarts.init(box); }
+      const rh=rows.length<=3?104:(rows.length<=5?80:64);
+      box.style.height=(rows.length*rh+100)+'px';
+      chart.resize();
+      chart.setOption(ridgeOpt(rows,key), true);
+      ridgeTable(tbl,rows,key,opts);
+    }
+    btns.forEach(b=>{
+      const g=b.dataset.g;
+      const n=P.filter(p=>p.g===g && p[key]!=null).length;
+      b.innerHTML=g+'<span class="cnt">'+n+'</span>';
+      b.addEventListener('click',()=>{btns.forEach(x=>x.classList.toggle('on',x===b));paint(gender=g);});
+    });
+    btns[0].classList.add('on');
+    paint(gender);
+    ridgeCharts.push({resize:()=>chart&&chart.resize()});
+  }
+  ridgeTabs('r7k','c_ridge7k','t_ridge7k','r',{pace:true});
+  ridgeTabs('rstr','c_ridgestr','t_ridgestr','s',{});
+  ridgeTabs('rspd','c_ridgespd','t_ridgespd','sp',{});
+  ridgeTabs('rend','c_ridgeend','t_ridgeend','e',{});
+  ridgeTabs('rod','c_ridgeod','t_ridgeod','od',{});
+  ridgeTabs('ra1','c_ridgea1','t_ridgea1','a1',{});
+  ridgeTabs('ra2','c_ridgea2','t_ridgea2','a2',{});
+  ridgeTabs('ra3','c_ridgea3','t_ridgea3','a3',{});
+  ridgeTabs('rsn','c_ridgesn','t_ridgesn','sn',{});
+  ridgeTabs('rop','c_ridgeop','t_ridgeop','op',{});
+  ridgeTabs('rxo','c_ridgexo','t_ridgexo','xo',{});
+  ridgeTabs('rev','c_ridgeev','t_ridgeev','ev',{});
+
+  // ---- 团队项目汇总表 ----
+  (function(){
+    const TF={'MIXED DOUBLES ODYSSEY':'time','ALLTRA TRILOGY - I':'time','ALLTRA TRILOGY - II':'reps',
+      'ALLTRA TRILOGY - III':'reps','TEAM ODYSSEY':'time','1RM SNATCH':'kg','ENDURANCE':'time',
+      'GRAVITY':'time','OPTIMUS PRIME':'time'};
+    const T=D.teams.filter(t=>t.m===113);
+    const tb=document.getElementById('t_teamitems');
+    const rows=Object.keys(TF).map(k=>{
+      const rec=T.filter(t=>t.ex&&t.ex[k]!=null);
+      const v=rec.map(t=>t.ex[k]).sort((a,b)=>a-b);
+      if(!v.length) return null;
+      const hi=TF[k]!=='time';
+      const f=TF[k]==='time'?fmtT:(TF[k]==='kg'?(x=>x+' kg'):(x=>x+' 次'));
+      const med=v[Math.floor((v.length-1)/2)];
+      const divs=[...new Set(rec.map(t=>t.dv))].join('、');
+      return '<tr><td>'+k+'</td><td class="mut">'+divs+'</td><td class="num">'+v.length+'</td>'+
+        '<td class="num"><b>'+f(hi?v[v.length-1]:v[0])+'</b></td>'+
+        '<td class="num">'+f(med)+'</td>'+
+        '<td class="num">'+f(hi?v[0]:v[v.length-1])+'</td></tr>';
+    }).filter(Boolean);
+    tb.innerHTML='<thead><tr><th style="text-align:left">项目</th><th style="text-align:left">组别</th>'+
+      '<th class="num">队伍数</th><th class="num">最好</th><th class="num">中位</th><th class="num">最差</th></tr></thead><tbody>'+
+      rows.join('')+'</tbody>';
+  })();
+
+  // ---- 关门时间：完成 / 封顶 / 退赛 ----
+  (function(){
+    const box=document.getElementById('c_cap'), tbl=document.getElementById('t_cap');
+    if(!box||!tbl||!D.caps) return;
+    const NAME={od:'ODYSSEY',a1:'ALLTRA Ⅰ',a2:'ALLTRA Ⅱ',a3:'ALLTRA Ⅲ',sn:'1RM SNATCH',op:'OPTIMUS',xo:'X.O',ev:'EVA ONE'};
+    const rows=Object.keys(NAME).map(k=>D.caps[k]).filter(Boolean).reverse(); // 横向条形自下而上
+    const c=echarts.init(box);
+    const pctOf=(r,v)=>r.total?Math.round(v/r.total*100):0;
+    const mk=(name,color,field)=>{
+      return {name,type:'bar',stack:'a',barMaxWidth:26,
+        emphasis:{focus:'series'},
+        itemStyle:{color},
+        data:rows.map(r=>({value:r[field],total:r.total,proj:NAME[r.key]})),
+        label:{show:true,position:'inside',fontSize:9.5,color:'#fff',fontWeight:600,
+          formatter:p=>{
+            const v=p.value, pc=pctOf(p.data,p.data?p.value:0);
+            return (p.data && p.data.total && p.value/p.data.total>=0.09) ? (Math.round(p.value/p.data.total*100)+'%') : '';
+          }}};
+    };
+    c.setOption({
+      animationDuration:600,
+      legend:{top:0,right:0,itemWidth:10,itemHeight:10,textStyle:{fontSize:11.5,color:'#4a5261'}},
+      tooltip:{trigger:'axis',axisPointer:{type:'shadow'},backgroundColor:'rgba(255,255,255,.97)',
+        borderColor:'#e3e7ee',borderWidth:1,padding:[9,12],
+        textStyle:{color:'#2b3240',fontSize:12},extraCssText:'box-shadow:0 8px 24px rgba(20,24,31,.10);border-radius:8px',
+        formatter:ps=>{
+          const r=rows[ps[0].dataIndex]; if(!r) return '';
+          return `<b>${NAME[r.key]}</b>　参赛 ${r.total} 人<br/>`+
+            `完成 ${r.ok}（${pctOf(r,r.ok)}%）<br/>封顶 ${r.cap}（${pctOf(r,r.cap)}%）`+
+            (r.capMed!=null?`，中位只做到 ${r.capMed} 次`:'')+`<br/>退赛 ${r.dnf}（${pctOf(r,r.dnf)}%）`;
+        }},
+      grid:{left:12,right:26,top:34,bottom:6,containLabel:true},
+      xAxis:{type:'value',name:'人数',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+        splitLine:{lineStyle:{color:'#eef1f5'}},axisLabel:{fontSize:11,color:'#8a93a3'}},
+      yAxis:{type:'category',data:rows.map(r=>NAME[r.key]),axisLine:{lineStyle:{color:'#dfe4ec'}},
+        axisTick:{show:false},axisLabel:{fontSize:11.5,color:'#4a5261'}},
+      series:[mk('完成','#0f9d76','ok'), mk('封顶','#e0a32e','cap'), mk('退赛','#c0392b','dnf')]
+    });
+    charts.push(c);
+
+    const body=Object.keys(NAME).map(k=>D.caps[k]).filter(Boolean).map(r=>{
+      const rate=r.total?Math.round(r.ok/r.total*100):0;
+      const capRate=r.total?Math.round(r.cap/r.total*100):0;
+      const capTxt=r.cap>0?`${r.cap}（${capRate}%）`:'—';
+      const mid=r.cap>0&&r.capMed!=null?`${r.capMed} 次`:'—';
+      const note=r.key==='a2'?'次数制：无封顶，未完成=次数少':'';
+      return `<tr><td>${NAME[r.key]}</td><td class="num">${r.total}</td><td class="num">${r.ok}</td>`+
+        `<td class="num">${r.cap||'—'}</td><td class="num">${r.dnf||'—'}</td>`+
+        `<td class="num"><b>${rate}%</b></td><td class="num">${capTxt}</td><td class="num">${mid}</td>`+
+        `<td class="mut">${note}</td></tr>`;
+    }).join('');
+    tbl.innerHTML='<thead><tr><th style="text-align:left">项目</th><th class="num">参赛</th><th class="num">完成</th>'+
+      '<th class="num">封顶</th><th class="num">退赛</th><th class="num">完成率</th><th class="num">封顶人数</th>'+
+      '<th class="num">封顶中位完成量</th><th style="text-align:left">备注</th></tr></thead><tbody>'+body+'</tbody>';
+  })();
+
+  // ---- 08 混双协同 ----
+  (function(){
+    const S=D.syn, sc=document.getElementById('c_syn_scatter'), rk=document.getElementById('c_syn_rank'),
+          tb=document.getElementById('t_syn'), note=document.getElementById('n_syn');
+    if(!S||!S.rows||!S.rows.length||!sc) return;
+    const rows=S.rows;
+    const POS='#0f9d76', NEG='#c0392b';
+    const med=a=>{const s=[...a].sort((x,y)=>x-y);return s[Math.floor(s.length/2)];};
+    const medSyn=med(rows.map(r=>r.syn));
+    const nPos=rows.filter(r=>r.syn>0).length;
+
+    // 散点
+    const c1=echarts.init(sc);
+    c1.setOption({
+      animationDuration:700,
+      tooltip:{trigger:'item',backgroundColor:'rgba(255,255,255,.97)',borderColor:'#e3e7ee',borderWidth:1,
+        padding:[9,12],textStyle:{color:'#2b3240',fontSize:12},
+        extraCssText:'box-shadow:0 8px 24px rgba(20,24,31,.10);border-radius:8px',
+        formatter:p=>{
+          const r=rows[p.dataIndex];
+          return `<b>${r.n}</b><br/><span style="color:#8a93a3">${r.m}</span><br/>`+
+            `成员预期 ${r.exp} · 团队实际 ${r.act}<br/>协同 <b style="color:${r.syn>=0?POS:NEG}">${r.syn>0?'+':''}${r.syn} pt</b>　平衡度 ${r.bal}`;
+        }},
+      grid:{left:16,right:24,top:26,bottom:40,containLabel:true},
+      xAxis:{type:'value',min:0,max:100,name:'成员个人百分位均值（预期）',nameLocation:'middle',nameGap:26,
+        nameTextStyle:{fontSize:11,color:'#8a93a3'},splitLine:{lineStyle:{color:'#f1f4f8'}},
+        axisLabel:{fontSize:11,color:'#8a93a3'}},
+      yAxis:{type:'value',min:0,max:100,name:'团队实际百分位',nameTextStyle:{fontSize:11,color:'#8a93a3'},
+        splitLine:{lineStyle:{color:'#f1f4f8'}},axisLabel:{fontSize:11,color:'#8a93a3'}},
+      series:[{
+        type:'scatter',
+        data:rows.map((r,i)=>({
+          value:[r.exp,r.act],
+          symbolSize:6+Math.min(9,Math.abs(r.syn)/2.2),
+          itemStyle:{color:r.syn>=0?'rgba(15,157,118,.72)':'rgba(192,57,43,.70)',borderColor:'#fff',borderWidth:.8},
+          label:{show:i<5||i>=rows.length-5,formatter:r.n,position:'top',fontSize:9,color:'#5a6474',distance:4}
+        })),
+        markLine:{silent:true,symbol:'none',lineStyle:{color:'#98a2b3',type:'dashed',width:1.2},
+          label:{show:true,formatter:'1+1 = 2',fontSize:10,color:'#98a2b3',position:'middle'},
+          data:[[{coord:[0,0]},{coord:[100,100]}]]},
+        emphasis:{scale:1.4}
+      }]
+    });
+    charts.push(c1);
+
+    // 排行：前10 + 后10
+    const top=rows.slice(0,10), bot=rows.slice(-10).reverse();
+    const list=top.concat(bot);
+    const c2=echarts.init(rk);
+    c2.setOption({
+      animationDuration:700,
+      tooltip:{trigger:'item',backgroundColor:'rgba(255,255,255,.97)',borderColor:'#e3e7ee',borderWidth:1,
+        padding:[9,12],textStyle:{color:'#2b3240',fontSize:12},
+        extraCssText:'box-shadow:0 8px 24px rgba(20,24,31,.10);border-radius:8px',
+        formatter:p=>{const r=list[p.dataIndex];
+          return `<b>${r.n}</b><br/><span style="color:#8a93a3">${r.m}</span><br/>预期 ${r.exp} → 实际 ${r.act}<br/>协同 <b>${r.syn>0?'+':''}${r.syn} pt</b>`;}},
+      grid:{left:12,right:56,top:14,bottom:28,containLabel:true},
+      xAxis:{type:'value',name:'协同度（百分位点）',nameTextStyle:{fontSize:10.5,color:'#8a93a3'},
+        splitLine:{lineStyle:{color:'#f1f4f8'}},axisLabel:{fontSize:11,color:'#8a93a3'}},
+      yAxis:{type:'category',data:list.map(r=>r.n.length>18?r.n.slice(0,18)+'…':r.n),
+        axisLine:{lineStyle:{color:'#dfe4ec'}},axisTick:{show:false},
+        axisLabel:{fontSize:10.5,color:'#4a5261'}},
+      series:[{
+        type:'bar',barMaxWidth:16,
+        data:list.map(r=>({value:r.syn,itemStyle:{color:r.syn>=0?POS:NEG,borderRadius:r.syn>=0?[0,3,3,0]:[3,0,0,3]}})),
+        label:{show:true,position:'right',fontSize:9.5,color:'#5a6474',
+          formatter:p=>(p.value>0?'+':'')+p.value+' pt'}
+      }]
+    });
+    charts.push(c2);
+
+    // 明细表
+    tb.innerHTML='<thead><tr><th class="num">#</th><th style="text-align:left">队伍</th><th style="text-align:left">成员（男 / 女）</th>'+
+      '<th class="num">成员预期</th><th class="num">团队实际</th><th class="num">协同度</th><th class="num">平衡度</th></tr></thead><tbody>'+
+      rows.map((r,i)=>`<tr><td class="num mut">${i+1}</td><td>${r.n}</td><td class="mut">${r.m}</td>`+
+        `<td class="num">${r.exp}</td><td class="num">${r.act}</td>`+
+        `<td class="num" style="color:${r.syn>=0?POS:NEG};font-weight:700">${r.syn>0?'+':''}${r.syn}</td>`+
+        `<td class="num mut">${r.bal}</td></tr>`).join('')+'</tbody>';
+
+    note.innerHTML=
+      `<b>怎么读</b>：90 支有效混双队（98 支中有 8 支缺成员或队伍成绩）中，${nPos} 支打出超预期，协同度中位 <b>${medSyn>0?'+':''}${medSyn} pt</b>。`+
+      `成员预期与团队实际的相关性 <b>r = ${S.corr.exp_act}</b>——团队名次基本由两人各自水平决定，协同能挪动的空间大约 ±10~20 个百分位点。`+
+      `<br><b>注意</b>：平衡度与实际成绩的相关性只有 r = ${S.corr.bal_act}，<b>「两人一样强」并不自动等于「配合更好」</b>；但高分协同队大多平衡度不低（0.66~0.85），说明互补型搭配（一人拉一人跑）也能靠错位拿分。`+
+      `<br><b>口径</b>：团队成绩用 7K / 硬拉 / SPEED 三项合计自行排名（官方 teamRank 与成员成绩对不上，未采用）；不含 ODYSSEY、ALLTRA 三部曲等只有队伍合计的项目，所以这是<b>下限估计</b>式的协同度，不是完整总分排名。`;
+  })();
+
+  window.addEventListener('resize',()=>{charts.forEach(c=>c&&c.resize());ridgeCharts.forEach(o=>o.resize());});
+})();
+</script>
+
+<div class="afc-foot">
+  <div class="afc-fbox">
+    <b>免责声明：</b>本站内容为个人基于公开成绩榜的统计分析，<b>仅供娱乐与参考，不构成任何训练 / 健康 / 参赛建议</b>，
+    亦不代表官方结论。成绩可能存在口径差异、缺项或人工判别误差，一切请以主办方最终公布为准。依据本页内容进行的任何训练或参赛决策，风险与后果由使用者自行承担。
+  </div>
+  <div>
+    数据范围：2026 全力游戏<b>总决赛</b>（matchId 113）与<b>公开赛</b>（matchId 149）官方成绩接口 · 含个人与团队组别<br>
+    页面：<a href="./index.html">导航首页</a> · <a href="./analysis.html">成绩深度分析</a> · <a href="./selftest.html">水平自测工具</a><br>
+    原始成绩版权归属赛事主办方；本页仅作非商业的数据整理与可视化呈现。生成于 2026-10-28。
+  </div>
+</div>
+
+
+<script>
+(function(){
+  var KEY='afcDiscClosed__analysis';
+  var b=document.getElementById('afcDisc'), x=document.getElementById('afcDiscX');
+  if(!b) return;
+  try{ if(localStorage.getItem(KEY)==='1'){ b.style.display='none'; } }catch(e){}
+  if(x) x.addEventListener('click',function(){
+    b.style.display='none';
+    try{ localStorage.setItem(KEY,'1'); }catch(e){}
+  });
+})();
+</script>
+
+</body>
+</html>
