@@ -105,6 +105,22 @@
   .rival .nm span{font-size:11px;color:var(--ink3);font-weight:500}
   .rival .rl{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.6}
   footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.8}
+  /* ===== 手机适配 ===== */
+  .tw-hint{display:none;font-size:11.5px;color:var(--ink3);margin-top:6px;text-align:right}
+  @media(max-width:640px){
+    .wrap{padding:0 15px 56px}
+    header{padding-top:30px}
+    h1{font-size:22px}
+    .sub{font-size:13px}
+    .card{padding:14px 13px}
+    section{margin-top:26px}
+    .sec-d,.note{font-size:12px}
+    .row{gap:10px}
+    .tw-hint{display:block}
+    .tw{border-left:0;border-right:0;border-radius:0;margin-left:-13px;margin-right:-13px;width:calc(100% + 26px)}
+    .tw table{font-size:11.5px}
+    .tw th,.tw td{padding:7px 8px}
+  }
 
   /* ===== 免责声明 ===== */
   .afc-disc{position:relative;background:#fff8e6;border-bottom:1px solid #f0dfae;padding:11px 46px 11px 18px;
@@ -529,7 +545,7 @@ function render(){
     });
     html+='</tr>';
   });
-  html+='</tbody></table></div>';
+  html+='</tbody></table></div><div class="tw-hint">← 表格可左右滑动查看更多组别 →</div>';
   html+='</div>';
   if(vals.e!=null){
     html+='<div class="note"><b>关于 ENDURANCE</b>：<b>总决赛</b>里该项目原本面向所有组别设置，今年因天气原因最终<b>只有职业组完成</b>，其余总决赛组别没有成绩；<b>公开赛</b>的个人组别则完整设置了该项目（男 56 / 女 35 共 91 条有效成绩）。'+
@@ -701,7 +717,7 @@ function drawGapChart(res,tgtId,keys,vals){
 
 <script>
 (function(){
-  var KEY='afcDiscClosed__index';
+  var KEY='afcDiscClosed__afc2026_水平自测';
   var b=document.getElementById('afcDisc'), x=document.getElementById('afcDiscX');
   if(!b) return;
   try{ if(localStorage.getItem(KEY)==='1'){ b.style.display='none'; } }catch(e){}
